@@ -1,5 +1,5 @@
 # Static files
-*.env
+.env
 
 
 
