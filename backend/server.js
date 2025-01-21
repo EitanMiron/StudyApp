@@ -1,11 +1,13 @@
 require('dotenv').config();
 
 const express = require("express");
-
+const studyRoutes = require('./routes/study')
 
 //express app
 const app = express()
 
+//middleware
+app.use(express.json())
 
 app.use((req, res, next) => {
     console.log(req.path, req.method);
@@ -14,9 +16,7 @@ app.use((req, res, next) => {
 
 
 //routes
-app.get('/', (req, res) => {
-    res.json({mssg: "welcome to app"})
-})
+app.use('/api/study', studyRoutes)
 
 app.listen(process.env.PORT, () => {
     console.log("listening on port", process.env.PORT);
