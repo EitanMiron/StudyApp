@@ -1,7 +1,19 @@
 require('dotenv').config();
 
 const express = require("express");
-const studyRoutes = require('./routes/study')
+const mongoose = require('mongoose')
+
+
+const authRoutes = require('./routes/authRoutes')
+const groupRoutes = require('./routes/groupRoutes')
+const memberRoutes = require('./routes/memberRoutes')
+const noteRoutes = require('./routes/noteRoutes')
+const quizRoutes = require('./routes/quizRoutes')
+const resourceRoutes = require('./routes/resourceRoutes')
+const sessionRoutes = require('./routes/sessionRoutes')
+const userRoutes = require('./routes/userRoutes')
+
+
 
 //express app
 const app = express()
@@ -16,11 +28,28 @@ app.use((req, res, next) => {
 
 
 //routes
-app.use('/api/study', studyRoutes)
+app.use('/api/authRoutes', authRoutes)
+app.use('/api/groupRoutes', groupRoutes)
+app.use('/api/memberRoutes', memberRoutes)
+app.use('/api/noteRoutes', noteRoutes)
+app.use('/api/quizRoutes', quizRoutes)
+app.use('/api/resourceRoutes', resourceRoutes)
+app.use('/api/sessionRoutes', sessionRoutes)
+app.use('/api/userRoutes', userRoutes)
 
-app.listen(process.env.PORT, () => {
-    console.log("listening on port", process.env.PORT);
 
+//connect to Database
+mongoose.connect(process.env.MONGO_URI)
+.then(() => {
+    app.listen(process.env.PORT, () => {
+        console.log("Connected to Databse: Listening on port", process.env.PORT);
+    
+    })
+})
+.catch((error) => {
+    console.log(error)
 })
 
-process.env
+
+
+

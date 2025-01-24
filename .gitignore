@@ -1,23 +1,46 @@
-# Static files
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
 .env
+.env.local
+.env.*.local
 
+# Build outputs
+dist/
+build/
 
+# OS-specific files
+.DS_Store
+Thumbs.db
 
-# Build and Release Folders
-bin-debug/
-bin-release/
-[Oo]bj/
-[Bb]in/
+# Editor-specific files
+.vscode/
+.idea/
+*.swp
 
-# Other files and folders
-.settings/
+# Dependencies
+package-lock.json
+yarn.lock
 
-# Executables
-*.swf
-*.air
-*.ipa
-*.apk
+# Coverage reports
+coverage/
 
-# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
-# should NOT be excluded as they contain compiler settings and other important
-# information for Eclipse / Flash Builder.
+# Temporary files
+*.tmp
+*.temp
+
+# Uploads and storage
+uploads/
+storage/
+
+# Generated files
+*.bak
+*.old
