@@ -36,7 +36,7 @@ const groupSchema = new Schema({
     createdBy: {
         type: Schema.Types.ObjectId,
         ref: 'UserAuth', //stroing ID of the user who created the group
-        required: true,
+        //required: true,
     },
     createdAt: {
         type: Date,

@@ -1,30 +1,75 @@
-//use the express router to have access to the app from this file
-const express = require('express')
+const express = require('express');
+const Note = require('../models/noteModel');
 
-const router = express.Router()
+const router = express.Router();
 
-//creates a new note
-router.post('/groups/:id/notes', (req, res) => {
-    res.json({mssg: "POST (create) a note"})
+// Create a new note in a study group
+router.post('/groups/:id/notes', async (req, res) => {
+    const { term, definition, flashcards, collaborators, createdBy } = req.body;
 
-})
+    try {
+        const newNote = new Note({
+            term,
+            definition,
+            flashcards,
+            collaborators,
+            createdBy,
+        });
 
-//attains a note
-router.get('/groups/:id/notes', (req, res) => {
-    res.json({mssg: "GET a note"})
+        await newNote.save();
+        res.status(201).json(newNote);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
 
-})
+// Get all notes in a study group
+router.get('/groups/:id/notes', async (req, res) => {
+    try {
+        const notes = await Note.find({ groupId: req.params.id }).populate('createdBy', 'name email');
+        res.status(200).json(notes);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
-//updates a given note
-router.put('/groups/:id/notes/noteID', (req, res) => {
-    res.json({mssg: "PUT (update) a note"})
-})
+// Get a single note by ID
+router.get('/groups/:id/notes/:noteID', async (req, res) => {
+    try {
+        const note = await Note.findById(req.params.noteID).populate('createdBy', 'name email');
+        if (!note) {
+            return res.status(404).json({ error: 'Note not found' });
+        }
+        res.status(200).json(note);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
-//delete a note
-router.delete('/groups/:id/notes/noteID', (req, res) => {
-    res.json({mssg: "Delete a note"})
-})    
+// Update a given note
+router.put('/groups/:id/notes/:noteID', async (req, res) => {
+    try {
+        const updatedNote = await Note.findByIdAndUpdate(req.params.noteID, req.body, { new: true, runValidators: true });
+        if (!updatedNote) {
+            return res.status(404).json({ error: 'Note not found' });
+        }
+        res.status(200).json(updatedNote);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
 
+// Delete a note
+router.delete('/groups/:id/notes/:noteID', async (req, res) => {
+    try {
+        const deletedNote = await Note.findByIdAndDelete(req.params.noteID);
+        if (!deletedNote) {
+            return res.status(404).json({ error: 'Note not found' });
+        }
+        res.status(200).json({ message: 'Note deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
-
-module.exports = router
+module.exports = router;

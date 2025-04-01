@@ -1,16 +1,39 @@
 //use the express router to have access to the app from this file
 const express = require('express')
 
+const Quiz = require('../models/quizModel');
+const { find } = require('../models/authModel');
+
 const router = express.Router()
 
 //create a quiz
-router.post('/groups/:id/quizzes', (req, res) => {
-    res.json({mssg: "POST (create) a quiz"})
+router.post('/groups/:id/quizzes', async (req, res) => {
+    const {groupId, title, description, questions, createdBy} = req.body;
+
+    try {
+        const newQuiz = new Quiz({
+            groupId,
+            description,
+            questions,
+            createdBy,
+        });
+
+        await newQuiz.save();
+        res.status(201).json(newQuiz);
+    }
+    catch (error) {
+        res.status(400).json({error: error.message});
+    }
 })
 
 //get all quizzes
 router.get('/groups/:id/quizzes', (req, res) => {
-    res.json({mssg: "GET all quizzes"})
+    try {
+        const allQuizzes = Quiz.find({groupId: req.params.id}).populate('createdAt', 'name email');
+    }
+    catch (error) {
+
+    }
 })    
 
 //get an individual quiz
