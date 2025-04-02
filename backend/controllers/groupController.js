@@ -1,0 +1,65 @@
+const Group = require('../models/groupModel');
+
+// Get all study groups
+const getAllGroups = async (req, res) => {
+    try {
+        const groups = await Group.find();
+        res.status(200).json(groups);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// Get a single study group
+const getGroupById = async (req, res) => {
+    try {
+        const group = await Group.findById(req.params.id);
+        if (!group) {
+            return res.status(404).json({ error: 'Group not found' });
+        }
+        res.status(200).json(group);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// Create a new study group
+const createGroup = async (req, res) => {
+    const { name, subject, description, members } = req.body;
+
+    try {
+        const newGroup = new Group({ name, subject, description, members });
+        await newGroup.save();
+        res.status(201).json(newGroup);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// Update a study group
+const updateGroup = async (req, res) => {
+    try {
+        const updatedGroup = await Group.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        if (!updatedGroup) {
+            return res.status(404).json({ error: 'Group not found (trying to update)' });
+        }
+        res.status(200).json(updatedGroup);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+// Delete a study group
+const deleteGroup = async (req, res) => {
+    try {
+        const deletedGroup = await Group.findByIdAndDelete(req.params.id);
+        if (!deletedGroup) {
+            return res.status(404).json({ error: 'Group not found' });
+        }
+        res.status(200).json({ message: 'Group deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+module.exports = { getAllGroups, getGroupById, createGroup, updateGroup, deleteGroup };
