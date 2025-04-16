@@ -1,0 +1,130 @@
+/* Set the page background with your image */
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    background: url('../styles/images/pexels-photo-1624496.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    position: relative;
+  }
+  
+  /* Add overlay for better readability */
+  body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /*background-color: rgba(132, 113, 79, 0.7);*/ /* Your color with 70% opacity */
+    z-index: -1;
+  }
+  
+  .register-container {
+    width: 90%;
+    max-width: 500px;
+    padding: 2.5rem;
+    /*background-color: rgba(255, 255, 255, 0.9);*/ /* Semi-transparent white */
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    margin: 20px;
+    backdrop-filter: blur(1.5px); /* Subtle blur effect */
+  }
+  
+  .register-container h1 {
+    text-align: center;
+    color: #ffffff;
+    margin-bottom: 1.8rem;
+    font-size: 1.8rem;
+  }
+  
+  /* Form styling */
+  .register-container form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.8rem;
+    color: white;
+  }
+  
+  /* Input field styling */
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    
+  }
+  
+  /* Enhance contrast for form elements */
+.form-field label {
+    color: #2c3e50; /* Darker for better contrast */
+    font-weight: 600;
+  }
+  
+  .form-field input,
+  .form-field select {
+    padding: 0.9rem;
+    border: 1px solid #904a4a;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .form-field input:focus,
+  .form-field select:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+  }
+  
+  /* Select dropdown styling */
+  .form-field select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+  }
+  .registerButton {
+    background-color: #3498db;
+    color: white;
+    padding: 1.0rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+  
+  .register-button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+  }
+  
+  .register-button:active {
+    transform: translateY(0);
+  }
+  
+  /* Error message styling */
+  .error-text {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-top: -0.8rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Responsive adjustments for background */
+@media (max-width: 768px) {
+    body {
+      background-attachment: scroll; /* Fixes mobile rendering issues */
+    }
+  }

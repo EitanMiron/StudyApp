@@ -9,6 +9,7 @@ interface Props {
   onClick: () => void;
   radius: string;
   width: string;
+  type?: "button" | "submit" | "reset";
   style?: React.CSSProperties;  // Optional additional styles
 }
 
@@ -20,11 +21,13 @@ const Button: React.FC<Props> = ({
     onClick, 
     radius,
     width,
+    type = "button",
     style = {}
   }) => { 
   return (
     <button 
-      onClick={onClick}
+    type={type}  
+    onClick={onClick}
       style={{
          backgroundColor: color,
          border,

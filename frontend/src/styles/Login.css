@@ -1,0 +1,140 @@
+/* src/styles/Login.css */
+
+/* Page background and base styles */
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    background: url('/images/pexels-photo-531880.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    position: relative;
+  }
+  
+  /* Background overlay */
+  body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* background-color: rgba(132, 113, 79, 0.7); Same as register page */
+    z-index: -1;
+  }
+  
+  /* Login container */
+  .login-container {
+    
+    width: 90%;
+    max-width: 450px;
+    padding: 2.5rem;
+    /* background-color: rgba(255, 255, 255, 0.9); */
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    margin: 20px;
+    backdrop-filter: blur(2px);
+   
+  }
+  
+  .login-container h1 {
+    text-align: center;
+    color: #ffffff;
+    margin-bottom: 1.8rem;
+    font-size: 1.8rem;
+  }
+  
+  /* Form styling */
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    color: white;
+    align-items: center;
+  }
+  
+  /* Form field styling */
+  .form-group {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.6rem;
+    color: white;
+    
+  }
+  
+  .form-group label {
+    font-size: 1rem;
+    color: #34495e;
+    font-weight: 500;
+    color: white;
+  }
+  
+  .form-group input {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 17px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+    
+  }
+  
+  .form-group input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+  }
+  
+  /* Error message styling */
+  .error-message {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    text-align: center;
+    margin: -0.5rem 0 0.5rem;
+  }
+  
+  /* Login button styling */
+  .loginButton {
+    background-color: #3498db;
+    color: white;
+    padding: 1rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+  
+  .loginButton:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+  }
+  
+  .loginButton:active {
+    transform: translateY(0);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 480px) {
+    .login-container {
+      padding: 1.8rem;
+      margin: 15px;
+    }
+    
+    .login-container h1 {
+      font-size: 1.6rem;
+    }
+    
+    .form-group input {
+      padding: 0.8rem;
+    }
+
+    
+  }

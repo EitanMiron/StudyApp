@@ -1,19 +1,20 @@
 // src/components/Dropdown.tsx
 import React, { useState } from 'react';
+import {Link} from 'react-router-dom';
 import "../styles/Dropdown.css";
 
 const Dropdown: React.FC = () => {
-  const [userDropdown, setUserDropdown] = useState(false);
+  const [studentDropdown, setStudentDropdown] = useState(false);
   const [adminDropdown, setAdminDropdown] = useState(false);
 
   const toggleUserDropdown = () => {
-    setUserDropdown(!userDropdown);
+    setStudentDropdown(!studentDropdown);
     setAdminDropdown(false);
   };
 
   const toggleAdminDropdown = () => {
     setAdminDropdown(!adminDropdown);
-    setUserDropdown(false);
+    setStudentDropdown(false);
   };
 
   return (
@@ -21,10 +22,10 @@ const Dropdown: React.FC = () => {
       <button onClick={toggleUserDropdown} className="dropdown-button">
         Login / Register as User
       </button>
-      {userDropdown && (
+      {studentDropdown && (
         <div className="dropdown-menu">
-          <a href="/login/user">Login as User</a>
-          <a href="/register/user">Register as User</a>
+          <Link to="/login/user">Student Login</Link>
+          <Link to="/register/user">Student Registration</Link>
         </div>
       )}
 
@@ -33,8 +34,8 @@ const Dropdown: React.FC = () => {
       </button>
       {adminDropdown && (
         <div className="dropdown-menu">
-          <a href="/login/admin">Login as Admin</a>
-          <a href="/register/admin">Register as Admin</a>
+          <Link to="/login/admin">Admin Login</Link>
+          <Link to="/register/admin">Admin Register</Link>
         </div>
       )}
     </div>
