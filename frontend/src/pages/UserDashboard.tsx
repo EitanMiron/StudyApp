@@ -1,7 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import "../styles/Dashboard.css";
 import axios from 'axios';
+// Add axios interceptor for authentication
+axios.interceptors.request.use(
+    config => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    error => {
+        return Promise.reject(error);
+    }
+);
 
 interface DashboardStats {
     totalResources: number;
@@ -24,19 +37,25 @@ const UserDashboard: React.FC = () => {
         totalResources: 0,
         upcomingDeadlines: []
     });
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
                 const response = await axios.get('/api/user/dashboard');
                 setStats(response.data);
-            } catch (error) {
+            } catch (error: any) {
                 console.error('Error fetching dashboard data:', error);
+                if (error.response?.status === 401) {
+                    // Clear invalid token and redirect to login
+                    localStorage.removeItem('token');
+                    navigate('/login/user');
+                }
             }
         };
 
         fetchDashboardData();
-    }, []);
+    }, [navigate]);
 
     return (
         <div className="dashboard-container">

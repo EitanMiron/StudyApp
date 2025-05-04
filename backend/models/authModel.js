@@ -7,7 +7,8 @@ const authSchema = new Schema(
     {
         name: {
             type: String,
-            required: true
+            required: true,
+            trim: true
         },
         password: {
             type: String,
@@ -16,24 +17,24 @@ const authSchema = new Schema(
         },
         role: {
             type: String,
-            enum: ['student', 'admin'],
-            required: true,
+            enum: ['user', 'admin'],
+            default: 'user'
         },
-        email:{
+        email: {
             type: String,
             required: true,
             unique: true,
-            lowercase: true,
             trim: true,
+            lowercase: true
         },
         profilePic: {
             type: String,
-            default:'https://example.com/default-avatar.png',
+            default: ''
         },
-        // createdAt: {
-        //     type: Date,
-        //     default: Date.now
-        // },
+        createdAt: {
+            type: Date,
+            default: Date.now
+        }
     },
 
     {

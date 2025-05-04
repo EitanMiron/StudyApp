@@ -29,7 +29,7 @@ const RegisterAdmin = () => {
     e.preventDefault();
     try {
       await axios.post("/api/authRoutes/register", formData);
-      navigate('/');
+      navigate('/admin');
     } catch (err) {
       setError("Failed to register as 'Admin'. Please try again.");
     }

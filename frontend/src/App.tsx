@@ -7,6 +7,7 @@ import LoginAdmin from "./pages/LoginAdmin";
 import RegisterAdmin from "./pages/RegisterAdmin"
 import AdminDashboard from "./pages/AdminDashboard";
 import UserDashboard from "./pages/UserDashboard";
+import StudyGroups from "./pages/StudyGroups";
 
 const App: React.FC = () => {
   return (
@@ -19,7 +20,7 @@ const App: React.FC = () => {
         <Route path="/register/admin" element={<RegisterAdmin />} />
         <Route path="/user" element={<UserDashboard />} />
         <Route path="/admin" element={<AdminDashboard />} />
-        
+        <Route path="/groups" element={<StudyGroups />} />
       </Routes>
     </Router>
   );

@@ -9,7 +9,7 @@ const RegisterUser: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     password: '',
-    role: 'student',
+    role: 'user',
     email: '',
   });
 
@@ -27,10 +27,19 @@ const RegisterUser: React.FC = () => {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form data being sent:', formData);
     try {
-      await axios.post("/api/authRoutes/register", formData);
-      navigate('/');
-    } catch (err) {
+      const response = await axios.post("/api/authRoutes/register", formData);
+      console.log('Registration response:', response.data);
+      
+      // Store the token and user data
+      const { token, user } = response.data;
+      localStorage.setItem('token', token);
+      localStorage.setItem('email', user.email);
+      
+      navigate('/user');
+    } catch (err: any) {
+      console.error('Registration error:', err.response?.data || err);
       setError("Failed to register as 'User'. Please try again.");
     }
   };
@@ -69,7 +78,7 @@ const RegisterUser: React.FC = () => {
           type="select"
           value={formData.role}
           onChange={handleChange}
-          options={['student', 'admin']}
+          options={['user', 'admin']}
         />
         {error && <p className="error-message">{error}</p>}
         <Button

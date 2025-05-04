@@ -66,11 +66,13 @@
 .home-left h1 {
     font-size: clamp(1.8rem, 3vw, 2.2rem); /* Responsive size */
     margin-bottom: 15px;
+
 }
 
 .home-left p {
     font-size: clamp(1rem, 1.5vw, 1.2rem); /* Responsive size */
     margin-bottom: 15px;
+    color: white;
 }
 
 /* Right side containing the dropdown */

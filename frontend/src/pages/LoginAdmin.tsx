@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import "../styles/Login.css"
+import "../styles/Login.css";
 import Button from '../components/Button';
 
 const LoginAdmin: React.FC = () => {
-    const [Email, setEmail] = useState('');
-    const [Password, setPassword] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
@@ -16,11 +16,18 @@ const LoginAdmin: React.FC = () => {
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!email || !password) {
+            setError("Please enter both email and password.");
+            return;
+        }
+
         try {
             const response = await axios.post("/api/authRoutes/login", {
-              email: Email,
-              password: Password,
+                email,
+                password
             });
+
             const { token, role, email: returnedEmail } = response.data;
 
             localStorage.setItem('token', token);
@@ -28,15 +35,15 @@ const LoginAdmin: React.FC = () => {
 
             if (role === 'admin') {
                 navigate('/admin');
-            } else if (role === 'student') {
-                navigate('/')
+            } else if (role === 'user') {
+                navigate('/');
             } else {
-              setError("Unable to track valid login credentials for user role.");
+                setError("Unable to determine role from login credentials.");
             }
-        }catch(err) {
+        } catch (err) {
             setError("Unable to Login - Invalid Email or Password.");
         }
-    }
+    };
 
     return (
         <div className="login-container">
@@ -46,7 +53,7 @@ const LoginAdmin: React.FC = () => {
                     <label>Email:</label>
                     <input
                         type="email"
-                        value={Email}
+                        value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
@@ -55,7 +62,7 @@ const LoginAdmin: React.FC = () => {
                     <label>Password:</label>
                     <input
                         type="password"
-                        value={Password}
+                        value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
@@ -65,7 +72,7 @@ const LoginAdmin: React.FC = () => {
                     border="none"
                     color="#3498db"
                     height="30px"
-                    onClick={() => {}} // Empty handler since form submission is handled by onSubmit
+                    onClick={() => {}} // Form submission is handled by onSubmit
                     radius="10px"
                     width="30%"
                     style={{
@@ -79,6 +86,6 @@ const LoginAdmin: React.FC = () => {
             </form>
         </div>
     );
-}
+};
 
 export default LoginAdmin;

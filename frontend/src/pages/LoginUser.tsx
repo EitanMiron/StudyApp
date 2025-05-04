@@ -16,26 +16,26 @@ const LoginUser: React.FC = () => {
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        try {
-            const response = await axios.post("/api/authRoutes/login", {
-                email,
-                password,
-            });
 
-            const { token, role, email: returnedEmail } = response.data;
+        if (!email || !password) {
+            setError("Please enter both email and password.");
+            return;
+        }
+
+        try {
+            const response = await axios.post('/api/authRoutes/login', { email, password });
+            const { role, token, email: userEmail } = response.data;
 
             localStorage.setItem('token', token);
-            localStorage.setItem('email', returnedEmail);
+            localStorage.setItem('email', userEmail);
 
-            if (role === 'student') {
+            if (role === 'user') {
                 navigate('/user');
             } else if (role === 'admin') {
                 navigate('/admin');
-            } else {
-                setError("User role not detected.");
             }
         } catch (err) {
-            setError("Unable to Login - Invalid Email or Password.");
+            setError('Invalid email or password.');
         }
     };
 
@@ -66,7 +66,7 @@ const LoginUser: React.FC = () => {
                     border="none"
                     color="#3498db"
                     height="30px"
-                    onClick={() => {}} // Empty handler since form submission is handled by onSubmit
+                    onClick={() => {}}
                     radius="10px"
                     width="30%"
                     style={{
