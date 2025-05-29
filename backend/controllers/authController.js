@@ -118,9 +118,19 @@ const getCurrentUser = async (req, res) => {
     }
 };
 
+const getAllUsers = async (req, res) => {
+    try {
+      const users = await UserAuth.find({}, 'id name'); // Select only needed fields
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch users" });
+    }
+  };
+  
+
 // Refresh token placeholder (implement refresh token logic if needed)
 const refreshToken = (req, res) => {
     res.json({ message: "Token refreshed (implement JWT refresh logic here)" });
 };
 
-module.exports = { register, login, logout, getCurrentUser, refreshToken };
+module.exports = { register, login, logout, getCurrentUser, getAllUsers, refreshToken };

@@ -34,12 +34,11 @@ const noteSchema = new Schema(
       {
         userId: {
           type: Schema.Types.ObjectId,
-          ref: 'UserAuth', // Change this to match your actual user model name
           required: true,
         },
         role: {
           type: String,
-          enum: ['admin', 'editor'], // 'editor' makes more sense than 'member' for notes
+          enum: ['admin', 'editor'],
           default: 'editor',
         },
         modifiedAt: {
@@ -50,7 +49,6 @@ const noteSchema = new Schema(
     ],
     createdBy: {
       type: Schema.Types.ObjectId,
-      ref: 'UserAuth', // Stores the ID of the user who created the note
       required: true,
     },
     createdAt: {

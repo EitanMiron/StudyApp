@@ -12,6 +12,12 @@ router.get('/groups/:id', groupController.getGroupById);
 // POST (create) a new study group
 router.post('/groups', groupController.createGroup);
 
+// POST (join) a study group
+router.post('/groups/:id/join', groupController.joinGroup);
+
+// POST (leave) a study group
+router.post('/groups/:id/leave', groupController.leaveGroup);
+
 // PUT (update) a study group
 router.put('/groups/:id', groupController.updateGroup);
 

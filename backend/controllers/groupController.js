@@ -36,6 +36,57 @@ const createGroup = async (req, res) => {
     }
 };
 
+// Join a study group
+const joinGroup = async (req, res) => {
+    const { userId } = req.body;
+    const groupId = req.params.id;
+
+    try {
+        const group = await Group.findById(groupId);
+        if (!group) {
+            return res.status(404).json({ error: 'Group not found' });
+        }
+
+        // Check if user is already a member
+        if (group.members.includes(userId)) {
+            return res.status(400).json({ error: 'User already a member of the group' });
+        }
+
+        group.members.push(userId);
+        await group.save();
+
+        res.status(200).json({ message: 'Joined group successfully', group });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// Leave a study group
+const leaveGroup = async (req, res) => {
+    const { userId } = req.body;
+    const groupId = req.params.id;
+
+    try {
+        const group = await Group.findById(groupId);
+        if (!group) {
+            return res.status(404).json({ error: 'Group not found' });
+        }
+
+        // Remove userId from members
+        const index = group.members.indexOf(userId);
+        if (index === -1) {
+            return res.status(400).json({ error: 'User is not a member of the group' });
+        }
+
+        group.members.splice(index, 1);
+        await group.save();
+
+        res.status(200).json({ message: 'Left group successfully', group });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 // Update a study group
 const updateGroup = async (req, res) => {
     try {
@@ -62,4 +113,12 @@ const deleteGroup = async (req, res) => {
     }
 };
 
-module.exports = { getAllGroups, getGroupById, createGroup, updateGroup, deleteGroup };
+module.exports = {
+    getAllGroups,
+    getGroupById,
+    createGroup,
+    joinGroup,
+    leaveGroup,
+    updateGroup,
+    deleteGroup
+};

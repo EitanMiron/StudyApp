@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import "../styles/Dashboard.css";
+import { Link, useNavigate } from 'react-router-dom';
+import "../../styles/Dashboard.css";
 import axios from 'axios';
 
 interface DashboardStats {
@@ -23,41 +23,47 @@ const AdminDashboard: React.FC = () => {
         recentActivity: []
     });
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                const response = await axios.get('/api/admin/dashboard');
+                const token = localStorage.getItem('token');
+                const response = await axios.get('/api/adminRoutes/dashboard', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
                 setStats(response.data);
             } catch (error) {
                 console.error('Error fetching dashboard data:', error);
+                if (axios.isAxiosError(error) && error.response?.status === 401) {
+                    localStorage.removeItem('token');
+                    navigate('/login/admin');
+                }
             }
         };
 
         fetchDashboardData();
-    }, []);
+    }, [navigate]);
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('email');
+        navigate('/');
+    };
 
     return (
         <div className="dashboard-container">
             <div className="dashboard-header">
                 <div>
                     <h1>Admin Dashboard</h1>
-                    {/* <p>Welcome back! Here's your overview for today.</p> */}
                 </div>
+                <button className="logout-button" onClick={handleLogout}>Logout</button>
             </div>
 
             <div className="stats-overview">
-                <div className="stat-card">
-                    <h3>Total Users</h3>
-                    <div className="value">{stats.totalUsers}</div>
-                </div>
-                <div className="stat-card">
-                    <h3>Active Study Groups</h3>
-                    <div className="value">{stats.activeGroups}</div>
-                </div>
-                <div className="stat-card">
-                    <h3>Total Quizzes</h3>
-                    <div className="value">{stats.totalQuizzes}</div>
-                </div>
+                <div className="stat-card"><h3>Total Users</h3><div className="value">{stats.totalUsers}</div></div>
+                <div className="stat-card"><h3>Active Study Groups</h3><div className="value">{stats.activeGroups}</div></div>
+                <div className="stat-card"><h3>Total Quizzes</h3><div className="value">{stats.totalQuizzes}</div></div>
             </div>
 
             <div className="dashboard-grid">

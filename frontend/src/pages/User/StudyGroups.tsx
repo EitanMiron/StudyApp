@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, Box, TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Chip, Autocomplete } from '@mui/material';
-import StudyGroupCard from '../components/StudyGroupCard';
-import { Group } from '../types/group';
+import StudyGroupCard from '../../components/StudyGroupCard';
+import { Group } from '../../types/group';
 import axios from 'axios';
-import '../styles/StudyGroups.css';
+import '../../styles/StudyGroups.css';
 
 const StudyGroups: React.FC = () => {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -19,15 +19,17 @@ const StudyGroups: React.FC = () => {
   });
   const [users, setUsers] = useState<{ id: string; name: string }[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<{ id: string; name: string }[]>([]);
+  const [invitations, setInvitations] = useState<any[]>([]);
 
   useEffect(() => {
     fetchGroups();
     fetchUsers();
+    fetchInvitations();
   }, []);
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('/api/userRoutes/users');
+      const response = await axios.get('/api/authRoutes/all');
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -39,7 +41,6 @@ const StudyGroups: React.FC = () => {
       const response = await axios.get('/api/groupRoutes/groups');
       setGroups(response.data);
       
-      // Filter groups where current user is a member
       const userGroups = response.data.filter((group: Group) => 
         group.members.includes(localStorage.getItem('userId') || '')
       );
@@ -51,11 +52,41 @@ const StudyGroups: React.FC = () => {
     }
   };
 
+  const fetchInvitations = async () => {
+    try {
+      const userId = localStorage.getItem('userId');
+      if (!userId) return;
+      const res = await axios.get(`/api/invitations/user/${userId}`);
+      setInvitations(res.data);
+    } catch (error) {
+      console.error('Error fetching invitations:', error);
+    }
+  };
+
+  const handleAcceptInvitation = async (invitationId: string) => {
+    try {
+      await axios.post(`/api/invitations/${invitationId}/accept`);
+      fetchGroups();
+      fetchInvitations();
+    } catch (error) {
+      console.error('Error accepting invitation:', error);
+    }
+  };
+  
+  const handleDeclineInvitation = async (invitationId: string) => {
+    try {
+      await axios.post(`/api/invitations/${invitationId}/decline`);
+      fetchInvitations();
+    } catch (error) {
+      console.error('Error declining invitation:', error);
+    }
+  };
+
   const handleJoinGroup = async (groupId: string) => {
     try {
       const userId = localStorage.getItem('userId');
-      await axios.post(`/api/groups/${groupId}/join`, { userId });
-      fetchGroups(); // Refresh the groups list
+      await axios.post(`/api/groupRoutes/groups/${groupId}/join`, { userId });
+      fetchGroups();
     } catch (error) {
       console.error('Error joining group:', error);
     }
@@ -65,7 +96,7 @@ const StudyGroups: React.FC = () => {
     try {
       const userId = localStorage.getItem('userId');
       await axios.post(`/api/groups/${groupId}/leave`, { userId });
-      fetchGroups(); // Refresh the groups list
+      fetchGroups();
     } catch (error) {
       console.error('Error leaving group:', error);
     }
@@ -79,7 +110,6 @@ const StudyGroups: React.FC = () => {
         return;
       }
 
-      // Validate required fields
       if (!newGroup.name.trim() || !newGroup.subject.trim()) {
         console.error('Group name and subject are required');
         return;
@@ -93,7 +123,6 @@ const StudyGroups: React.FC = () => {
         invitedUsers: selectedUsers.map(user => user.id)
       });
 
-      // Send invitations to selected users
       if (selectedUsers.length > 0) {
         await Promise.all(selectedUsers.map(user => 
           axios.post('/api/invitations', {
@@ -158,6 +187,38 @@ const StudyGroups: React.FC = () => {
           />
         </div>
       </div>
+
+      {/* Invitations Section */}
+      {invitations.length > 0 && (
+        <Box className="invitations-box">
+          <Typography variant="h6" className="invitation-title">
+            You have {invitations.length} group invitation{invitations.length > 1 ? 's' : ''}
+          </Typography>
+          {invitations.map((invitation) => (
+            <Box key={invitation._id} className="invitation-card">
+              <Typography>
+                <strong>{invitation.inviterId.name}</strong> invited you to join <strong>{invitation.groupId.name}</strong>
+              </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleAcceptInvitation(invitation._id)}
+                className="accept-btn"
+              >
+                Accept
+              </Button>
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() => handleDeclineInvitation(invitation._id)}
+                className="decline-btn"
+              >
+                Decline
+              </Button>
+            </Box>
+          ))}
+        </Box>
+      )}
 
       <div className="groups-list">
         {filteredGroups.map((group) => (
@@ -241,4 +302,4 @@ const StudyGroups: React.FC = () => {
   );
 };
 
-export default StudyGroups; 
+export default StudyGroups;
