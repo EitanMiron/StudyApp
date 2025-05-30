@@ -35,21 +35,13 @@ const groupSchema = new Schema({
     ],
     createdBy: {
         type: Schema.Types.ObjectId,
-        ref: 'UserAuth', //stroing ID of the user who created the group
-        //required: true,
+        ref: 'UserAuth',
+        required: true,
     },
     createdAt: {
         type: Date,
         default: Date.now,
     },
-
-    
-
-
-
-
-
-    
 }, { timestamps: true })
 
-module.exports = mongoose.model('group', groupSchema)
+module.exports = mongoose.model('Group', groupSchema)

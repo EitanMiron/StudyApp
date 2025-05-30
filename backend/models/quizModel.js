@@ -27,7 +27,7 @@ const quizSchema = new Schema(
         options: [
           {
             optionText: { type: String, required: true },
-            isCorrect: { type: Boolean, default: false },
+            isCorrect: { type: Boolean, required: true },
           },
         ],
       },
@@ -45,11 +45,17 @@ const quizSchema = new Schema(
       type: Number, // in minutes
       default: null,
     },
+    maxAttempts: {
+      type: Number,
+      default: 1,
+      min: 1,
+    },
     submissions: [
       {
         user: {
           type: Schema.Types.ObjectId,
           ref: 'UserAuth',
+          required: true,
         },
         answers: [
           {
@@ -58,7 +64,10 @@ const quizSchema = new Schema(
             isCorrect: Boolean,
           },
         ],
-        score: Number,
+        score: {
+          type: Number,
+          default: 0,
+        },
         submittedAt: {
           type: Date,
           default: Date.now,

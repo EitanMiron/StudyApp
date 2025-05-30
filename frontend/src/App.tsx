@@ -16,6 +16,9 @@ import AdminAnalytics from "./pages/Admin/AdminAnalytics";
 import UserNotes from "./pages/User/UserNotes";
 import UserQuizzes from "./pages/User/UserQuizzes";
 import UserResources from "./pages/User/UserResources";
+import CreateQuiz from "./pages/User/CreateQuiz";
+import TakeQuiz from "./pages/User/TakeQuiz";
+import QuizResults from "./pages/User/QuizResults";
 
 const App: React.FC = () => {
   return (
@@ -95,6 +98,30 @@ const App: React.FC = () => {
           element={
             <ProtectedRoute>
               <UserQuizzes />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/groups/:groupId/quizzes/create"
+          element={
+            <ProtectedRoute>
+              <CreateQuiz />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/groups/:groupId/quizzes/:quizId"
+          element={
+            <ProtectedRoute>
+              <TakeQuiz />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/groups/:groupId/quizzes/:quizId/results"
+          element={
+            <ProtectedRoute>
+              <QuizResults />
             </ProtectedRoute>
           }
         />

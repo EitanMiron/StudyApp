@@ -49,14 +49,22 @@ const getUserDashboard = async (req, res) => {
 const getUserGroups = async (req, res) => {
     try {
         const userId = req.user.id;
-        const groups = await Group.find({ members: userId })
-            .populate('owner', 'name email')
-            .select('name description memberCount createdAt');
+        console.log('Fetching groups for user:', userId); // Debug log
 
+        const groups = await Group.find({ 'members.userId': userId })
+            .populate('createdBy', 'name email')
+            .select('name description members createdAt');
+
+        console.log('Found groups:', groups); // Debug log
         res.status(200).json(groups);
     } catch (error) {
         console.error('Error fetching user groups:', error);
-        res.status(500).json({ message: 'Server error' });
+        // Send more detailed error information
+        res.status(500).json({ 
+            message: 'Server error', 
+            error: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 };
 
@@ -77,19 +85,33 @@ const getUserNotes = async (req, res) => {
 const getUserQuizzes = async (req, res) => {
     try {
         const userId = req.user.id;
+        console.log('Fetching quizzes for user:', userId); // Debug log
+
+        // First get all groups the user is a member of
+        const userGroups = await Group.find({ 'members.userId': userId }).select('_id');
+        const groupIds = userGroups.map(group => group._id);
+
+        // Then find all quizzes in those groups
         const quizzes = await Quiz.find({
             $or: [
-                { 'group.members': userId },
+                { groupId: { $in: groupIds } },
                 { isPublic: true }
             ]
         })
         .populate('createdBy', 'name')
-        .select('title description questionCount dueDate');
+        .populate('groupId', 'name')
+        .select('title description questions dueDate timeLimit submissions')
+        .sort('-createdAt');
 
+        console.log('Found quizzes:', quizzes); // Debug log
         res.status(200).json(quizzes);
     } catch (error) {
         console.error('Error fetching user quizzes:', error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ 
+            message: 'Server error', 
+            error: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 };
 
