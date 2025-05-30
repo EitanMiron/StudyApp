@@ -5,167 +5,277 @@ body {
     font-family: Arial, sans-serif;
 }
 
+.study-groups-page {
+    /* background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%); */
+    background: #2A7B9B;
+    background: linear-gradient(90deg,rgba(42, 123, 155, 1) 11%, rgba(87, 199, 133, 1) 73%, rgba(237, 221, 83, 1) 100%);
+    min-height: 100vh;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
 .study-groups-container {
     padding: 2rem;
     max-width: 1200px;
     margin: 0 auto;
-    /* background-color: #f8f9fa; */
     min-height: 100vh;
+    position: relative;
+    z-index: 1;
 }
 
-.study-groups-header {
+.study-groups-container .study-groups-header {
     margin-bottom: 2rem;
-    background: white;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.header-top {
+.study-groups-container .header-top {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-.header-top-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.study-groups-title {
-    font-size: 2.5rem;
-    color: #1a237e;
-    margin: 0;
-    font-weight: 600;
-}
-
-.study-groups-subtitle {
-    font-size: 1.1rem;
-    color: #455a64;
-    margin-bottom: 1.5rem;
-}
-
-.search-container {
-    margin-bottom: 1.5rem;
-}
-
-.search-input {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
-    background-color: white;
-}
-
-.search-input:focus {
-    outline: none;
-    border-color: #1a237e;
-}
-
-.groups-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1.5rem;
-    margin-top: 2rem;
+    margin-bottom: 2rem;
 }
 
-.group-card {
-    background: white;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border: 1px solid #e0e0e0;
-}
-
-.group-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.group-header {
+.study-groups-container .header-top-row {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 1rem;
 }
 
-.group-title {
-    font-size: 1.5rem;
-    color: #1a237e;
+.study-groups-container .title-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.study-groups-container .back-button {
+    color: #2A7B9B !important;
+    font-weight: 500 !important;
+    padding: 0.5rem 0 !important;
+    text-transform: none !important;
+    align-self: flex-start;
+    transition: all 0.3s ease !important;
+}
+
+.study-groups-container .back-button:hover {
+    background-color: rgba(42, 123, 155, 0.1) !important;
+    transform: translateX(-5px);
+}
+
+.study-groups-container .study-groups-title {
+    font-size: 2.5rem !important;
+    color: #2A7B9B !important;
     margin: 0;
-    font-weight: 600;
+    font-weight: 700 !important;
+    letter-spacing: -0.5px;
 }
 
-.group-subject {
-    color: #455a64;
-    font-size: 1.1rem;
-    margin: 0.5rem 0;
-    font-weight: 500;
+.study-groups-container .enrolled-count {
+    color: #57C785 !important;
+    font-size: 1.1rem !important;
+    font-weight: 500 !important;
 }
 
-.group-description {
-    color: #37474f;
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
+.study-groups-container .create-group-button {
+    background: linear-gradient(45deg, #2A7B9B, #57C785) !important;
+    color: white !important;
+    padding: 0.8rem 2rem !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(42, 123, 155, 0.2) !important;
 }
 
-.group-meta {
+.study-groups-container .create-group-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(42, 123, 155, 0.3) !important;
+}
+
+.study-groups-container .search-container {
+    margin: 1.5rem 0;
+}
+
+.study-groups-container .search-input {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.3s ease !important;
+}
+
+.study-groups-container .search-input:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.study-groups-container .search-input .MuiOutlinedInput-root {
+    border-radius: 12px !important;
+}
+
+.study-groups-container .search-input .MuiOutlinedInput-notchedOutline {
+    border-color: rgba(42, 123, 155, 0.2) !important;
+}
+
+.study-groups-container .search-input:hover .MuiOutlinedInput-notchedOutline {
+    border-color: rgba(42, 123, 155, 0.4) !important;
+}
+
+.study-groups-container .groups-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.study-groups-container .group-card {
+    transition: all 0.3s ease;
+}
+
+.study-groups-container .group-card:hover {
+    transform: translateY(-8px);
+}
+
+.study-groups-container .study-group-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease !important;
+}
+
+.study-groups-container .study-group-card:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+.study-groups-container .study-group-card .MuiCardContent-root {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem !important;
+}
+
+.study-groups-container .study-group-card .MuiTypography-h6 {
+    color: #2A7B9B !important;
+    font-weight: 700 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.study-groups-container .study-group-card .MuiTypography-body2 {
+    color: #666 !important;
+    line-height: 1.6 !important;
+}
+
+.study-groups-container .group-actions {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.study-groups-container .invitations-box {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 20px;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.study-groups-container .invitation-title {
+    color: #2A7B9B !important;
+    font-weight: 600 !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.study-groups-container .invitation-card {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    justify-content: space-between;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
     margin-bottom: 1rem;
-}
-
-.member-count {
-    background: #e8eaf6;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    color: #1a237e;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-.action-button {
-    padding: 0.8rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
-    text-transform: none;
-    font-size: 1rem;
 }
 
-.join-button {
-    background: #1a237e;
-    color: white;
-    border: none;
+.study-groups-container .invitation-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
-.join-button:hover {
-    background: #0d1b6b;
+.study-groups-container .accept-btn {
+    background: linear-gradient(45deg, #57C785, #2A7B9B) !important;
+    margin-right: 0.5rem !important;
+    box-shadow: 0 4px 15px rgba(87, 199, 133, 0.2) !important;
 }
 
-.leave-button {
-    background: white;
-    color: #d32f2f;
-    border: 2px solid #d32f2f;
+.study-groups-container .decline-btn {
+    border-color: #EDDD53 !important;
+    color: #EDDD53 !important;
 }
 
-.leave-button:hover {
-    background: #d32f2f;
-    color: white;
-}
-
-.loading-text {
+.study-groups-container .loading-text {
     text-align: center;
-    color: #455a64;
+    color: white !important;
     font-size: 1.2rem;
     margin: 2rem 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Dialog Styles */
+.study-groups-container .MuiDialog-paper {
+    border-radius: 20px !important;
+    padding: 1.5rem !important;
+    background: rgba(255, 255, 255, 0.98) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+}
+
+.study-groups-container .MuiDialogTitle-root {
+    color: #2A7B9B !important;
+    font-weight: 700 !important;
+    padding-bottom: 1rem !important;
+}
+
+.study-groups-container .MuiDialogContent-root {
+    padding: 1.5rem !important;
+}
+
+.study-groups-container .MuiDialogActions-root {
+    padding: 1.5rem !important;
+}
+
+.study-groups-container .MuiTextField-root {
+    margin-bottom: 1.5rem !important;
+}
+
+.study-groups-container .MuiTextField-root label {
+    color: #2A7B9B !important;
+}
+
+.study-groups-container .MuiTextField-root .MuiOutlinedInput-root {
+    border-radius: 12px !important;
+    transition: all 0.3s ease !important;
+}
+
+.study-groups-container .MuiTextField-root .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #57C785 !important;
+}
+
+.study-groups-container .MuiTextField-root .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #2A7B9B !important;
 }
 
 /* Responsive Design */
@@ -174,95 +284,24 @@ body {
         padding: 1rem;
     }
 
-    .study-groups-title {
-        font-size: 2rem;
+    .study-groups-container .study-groups-header {
+        padding: 1.5rem;
     }
 
-    .group-header {
+    .study-groups-container .study-groups-title {
+        font-size: 2rem !important;
+    }
+
+    .study-groups-container .header-top-row {
         flex-direction: column;
         gap: 1rem;
     }
 
-    .action-button {
+    .study-groups-container .create-group-button {
         width: 100%;
     }
-}
 
-.create-group-button {
-    background: #1a237e;
-    color: white;
-    padding: 0.5rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 600;
-    text-transform: none;
-    transition: all 0.3s ease;
-    align-self: flex-start;
-}
-
-.create-group-button:hover {
-    background: #0d1b6b;
-    transform: translateY(-1px);
-}
-
-/* Dialog Styles */
-.MuiDialog-paper {
-    border-radius: 12px !important;
-    padding: 1rem;
-}
-
-.MuiDialogTitle-root {
-    color: #1a237e;
-    font-weight: 600;
-    padding-bottom: 0.5rem;
-}
-
-.MuiDialogContent-root {
-    padding: 1rem !important;
-}
-
-.MuiDialogActions-root {
-    padding: 1rem !important;
-}
-
-.MuiTextField-root {
-    margin-bottom: 1rem !important;
-}
-
-.MuiTextField-root label {
-    color: #455a64;
-}
-
-.MuiTextField-root .MuiOutlinedInput-root {
-    border-radius: 8px;
-}
-
-.MuiTextField-root .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-    border-color: #1a237e;
-}
-
-.MuiTextField-root .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: #1a237e;
-}
-
-.MuiButton-root {
-    text-transform: none !important;
-    font-weight: 600 !important;
-    padding: 0.5rem 1.5rem !important;
-    border-radius: 8px !important;
-}
-
-.MuiButton-contained {
-    background: #1a237e !important;
-}
-
-.MuiButton-contained:hover {
-    background: #0d1b6b !important;
-}
-
-.MuiButton-text {
-    color: #455a64 !important;
-}
-
-.MuiButton-text:hover {
-    background: rgba(26, 35, 126, 0.04) !important;
+    .study-groups-container .groups-list {
+        grid-template-columns: 1fr;
+    }
 } 

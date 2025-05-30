@@ -10,7 +10,7 @@ const getUserDashboard = async (req, res) => {
     try {
         const userId = new mongoose.Types.ObjectId(req.user.id);
         
-        const enrolledGroups = await Group.countDocuments({ members: userId });
+        const enrolledGroups = await Group.countDocuments({ 'members.userId': userId });
         const completedQuizzes = await Quiz.countDocuments({ 
             'submissions.user': userId, 
             'submissions.status': 'completed' 

@@ -15,15 +15,32 @@ interface DashboardStats {
     }>;
 }
 
+// Create a shared state outside the hook
+let sharedStats: DashboardStats = {
+    enrolledGroups: 0,
+    completedQuizzes: 0,
+    totalNotes: 0,
+    totalResources: 0,
+    upcomingDeadlines: []
+};
+
+// Create a list of setState functions to update
+const stateUpdaters: Array<React.Dispatch<React.SetStateAction<DashboardStats>>> = [];
+
 export const useDashboardData = () => {
-    const [stats, setStats] = useState<DashboardStats>({
-        enrolledGroups: 0,
-        completedQuizzes: 0,
-        totalNotes: 0,
-        totalResources: 0,
-        upcomingDeadlines: []
-    });
+    const [stats, setStats] = useState<DashboardStats>(sharedStats);
     const navigate = useNavigate();
+
+    // Add this component's setState to the list of updaters
+    useEffect(() => {
+        stateUpdaters.push(setStats);
+        return () => {
+            const index = stateUpdaters.indexOf(setStats);
+            if (index > -1) {
+                stateUpdaters.splice(index, 1);
+            }
+        };
+    }, []);
 
     const fetchDashboardData = async () => {
         try {
@@ -31,7 +48,10 @@ export const useDashboardData = () => {
             const response = await axios.get('http://localhost:4000/api/userRoutes/dashboard', {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            setStats(response.data);
+            // Update shared state
+            sharedStats = response.data;
+            // Update all components using the hook
+            stateUpdaters.forEach(updater => updater(response.data));
         } catch (error: any) {
             console.error('Error fetching dashboard data:', error);
             if (error.response?.status === 401) {

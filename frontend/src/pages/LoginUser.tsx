@@ -24,10 +24,11 @@ const LoginUser: React.FC = () => {
 
         try {
             const response = await axios.post('/api/authRoutes/login', { email, password });
-            const { role, token, email: userEmail } = response.data;
+            const { role, token, email: userEmail, id } = response.data;
 
             localStorage.setItem('token', token);
             localStorage.setItem('email', userEmail);
+            localStorage.setItem('userId', id);
 
             if (role === 'user') {
                 navigate('/user');

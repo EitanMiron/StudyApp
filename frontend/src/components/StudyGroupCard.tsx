@@ -1,42 +1,47 @@
 import React from 'react';
-import { Typography, Button } from '@mui/material';
+import { Card, CardContent, Typography, Button, Box } from '@mui/material';
 import { Group } from '../types/group';
 import '../styles/StudyGroups.css';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface StudyGroupCardProps {
   group: Group;
   onJoin: (groupId: string) => void;
   onLeave: (groupId: string) => void;
+  onDelete?: (groupId: string) => void;
   isEnrolled: boolean;
 }
 
-const StudyGroupCard: React.FC<StudyGroupCardProps> = ({ group, onJoin, onLeave, isEnrolled }) => {
+const StudyGroupCard: React.FC<StudyGroupCardProps> = ({ 
+  group, 
+  onJoin, 
+  onLeave, 
+  onDelete,
+  isEnrolled 
+}) => {
+  const userId = localStorage.getItem('userId');
+  const isAdmin = group.members.some(member => 
+    member.userId === userId && member.role === 'admin'
+  );
+
   return (
-    <div>
-      <div className="group-header">
-        <div>
-          <Typography variant="h6" className="group-title">
-            {group.name}
-          </Typography>
-          <Typography color="text.secondary" className="group-subject">
-            {group.subject}
-          </Typography>
-          <Typography variant="body2" className="group-description">
-            {group.description}
-          </Typography>
-          <div className="group-meta">
-            <span className="member-count">
-              {group.members.length} members
-            </span>
-          </div>
-        </div>
-        <div>
+    <Card className="study-group-card">
+      <CardContent>
+        <Typography variant="h6" component="div">
+          {group.name}
+        </Typography>
+        <Typography color="textSecondary" gutterBottom>
+          {group.subject}
+        </Typography>
+        <Typography variant="body2" color="textSecondary">
+          {group.description}
+        </Typography>
+        <Box className="group-actions">
           {isEnrolled ? (
             <Button 
               variant="outlined" 
-              color="error" 
+              color="secondary" 
               onClick={() => onLeave(group._id)}
-              className="action-button leave-button"
             >
               Leave Group
             </Button>
@@ -45,14 +50,24 @@ const StudyGroupCard: React.FC<StudyGroupCardProps> = ({ group, onJoin, onLeave,
               variant="contained" 
               color="primary" 
               onClick={() => onJoin(group._id)}
-              className="action-button join-button"
             >
               Join Group
             </Button>
           )}
-        </div>
-      </div>
-    </div>
+          {isAdmin && onDelete && (
+            <Button
+              variant="outlined"
+              color="error"
+              startIcon={<DeleteIcon />}
+              onClick={() => onDelete(group._id)}
+              sx={{ ml: 1 }}
+            >
+              Delete Group
+            </Button>
+          )}
+        </Box>
+      </CardContent>
+    </Card>
   );
 };
 

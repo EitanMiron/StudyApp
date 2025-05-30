@@ -25,20 +25,32 @@ const getGroupById = async (req, res) => {
 
 // Create a new study group
 const createGroup = async (req, res) => {
-    const { name, subject, description, members } = req.body;
+    const { name, subject, description } = req.body;
+    const userId = req.body.userId; // Get userId from request body
 
     try {
-        const newGroup = new Group({ name, subject, description, members });
+        const newGroup = new Group({
+            name,
+            subject,
+            description,
+            members: [{
+                userId,
+                role: 'admin',
+                joinedAt: new Date()
+            }],
+            createdBy: userId
+        });
         await newGroup.save();
         res.status(201).json(newGroup);
     } catch (error) {
+        console.error('Error creating group:', error);
         res.status(500).json({ error: error.message });
     }
 };
 
 // Join a study group
 const joinGroup = async (req, res) => {
-    const { userId } = req.body;
+    const { userId, role } = req.body;
     const groupId = req.params.id;
 
     try {
@@ -48,15 +60,28 @@ const joinGroup = async (req, res) => {
         }
 
         // Check if user is already a member
-        if (group.members.includes(userId)) {
+        const isMember = group.members.some(member => 
+            member.userId && member.userId.toString() === userId
+        );
+        
+        if (isMember) {
             return res.status(400).json({ error: 'User already a member of the group' });
         }
 
-        group.members.push(userId);
+        // Add new member
+        group.members.push({
+            userId: userId,
+            role: role || 'member',
+            joinedAt: new Date()
+        });
+        
         await group.save();
-
-        res.status(200).json({ message: 'Joined group successfully', group });
+        
+        // Return the updated group
+        const updatedGroup = await Group.findById(groupId);
+        res.status(200).json({ message: 'Joined group successfully', group: updatedGroup });
     } catch (error) {
+        console.error('Error joining group:', error);
         res.status(500).json({ error: error.message });
     }
 };
