@@ -10,7 +10,11 @@ const getUserDashboard = async (req, res) => {
     try {
         const userId = new mongoose.Types.ObjectId(req.user.id);
         
-        const enrolledGroups = await Group.countDocuments({ 'members.userId': userId });
+        // Get all groups the user is a member of
+        const userGroups = await Group.find({ 'members.userId': userId }).select('_id');
+        const groupIds = userGroups.map(group => group._id);
+
+        const enrolledGroups = userGroups.length;
         const completedQuizzes = await Quiz.countDocuments({ 
             'submissions.user': userId, 
             'submissions.status': 'completed' 
@@ -19,10 +23,7 @@ const getUserDashboard = async (req, res) => {
             'collaborators.userId': userId 
         });
         const totalResources = await Resource.countDocuments({ 
-            $or: [
-                { isPublic: true },
-                { sharedWith: userId }
-            ]
+            groupId: { $in: groupIds }
         });
         const upcomingDeadlines = await Deadline.find({
             user: userId,

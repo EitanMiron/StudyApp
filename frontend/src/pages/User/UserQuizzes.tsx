@@ -18,7 +18,7 @@ interface Quiz {
     };
     submissions?: Array<{
         status: 'in-progress' | 'completed' | 'graded';
-        score?: number;
+    score?: number;
         submittedAt?: string;
     }>;
     groupId: string | { _id: string };
@@ -91,28 +91,28 @@ const UserQuizzes: React.FC = () => {
         }
     };
 
-    const fetchQuizzes = async () => {
-        try {
-            const token = localStorage.getItem('token');
+        const fetchQuizzes = async () => {
+            try {
+                const token = localStorage.getItem('token');
             if (!token) {
                 navigate('/login/user');
                 return;
             }
 
             const response = await axios.get('http://localhost:4000/api/userRoutes/quizzes', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setQuizzes(response.data);
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                setQuizzes(response.data);
         } catch (error: any) {
-            console.error('Error fetching quizzes:', error);
+                console.error('Error fetching quizzes:', error);
             setError(error.response?.data?.message || 'Failed to fetch quizzes');
             if (error.response?.status === 401) {
-                navigate('/login/user');
-            }
+                    navigate('/login/user');
+                }
         } finally {
             setLoading(false);
-        }
-    };
+            }
+        };
 
     const getQuizStatus = (quiz: Quiz) => {
         if (!quiz.submissions || quiz.submissions.length === 0) {
@@ -200,7 +200,7 @@ const UserQuizzes: React.FC = () => {
         .sort((a, b) => new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime());
 
     if (loading) {
-        return (
+    return (
             <div className="quiz-page-container">
                 <div className="loading-container">
                     <CircularProgress />
@@ -332,8 +332,8 @@ const UserQuizzes: React.FC = () => {
                                                     Time Limit: {quiz.timeLimit} minutes
                                                 </Typography>
                                             )}
-                                        </div>
-                                        <div className="quiz-status">
+                            </div>
+                            <div className="quiz-status">
                                             <Typography variant="body2">
                                                 Status: {status}
                                             </Typography>
@@ -341,9 +341,9 @@ const UserQuizzes: React.FC = () => {
                                                 <Typography variant="body2">
                                                     Score: {score}%
                                                 </Typography>
-                                            )}
-                                        </div>
-                                        <div className="quiz-actions">
+                                )}
+                            </div>
+                            <div className="quiz-actions">
                                             {status === 'not_started' && (
                                                 <Button 
                                                     variant="contained" 
@@ -357,7 +357,7 @@ const UserQuizzes: React.FC = () => {
                                                 >
                                                     Start Quiz
                                                 </Button>
-                                            )}
+                                )}
                                             {status === 'in-progress' && (
                                                 <Button 
                                                     variant="contained" 
@@ -371,7 +371,7 @@ const UserQuizzes: React.FC = () => {
                                                 >
                                                     Continue Quiz
                                                 </Button>
-                                            )}
+                                )}
                                             {status === 'completed' && (
                                                 <>
                                                     <Button 
@@ -401,13 +401,13 @@ const UserQuizzes: React.FC = () => {
                                                         </Button>
                                                     )}
                                                 </>
-                                            )}
-                                        </div>
-                                    </div>
+                                )}
+                            </div>
+                        </div>
                                 </div>
                             );
                         })}
-                    </div>
+                </div>
                 )}
 
                 <Dialog

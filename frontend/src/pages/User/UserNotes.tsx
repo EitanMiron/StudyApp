@@ -38,24 +38,24 @@ const UserNotes: React.FC = () => {
         fetchNotes();
     }, []);
 
-    const fetchNotes = async () => {
-        try {
+        const fetchNotes = async () => {
+            try {
             setIsLoading(true);
-            const token = localStorage.getItem('token');
+                const token = localStorage.getItem('token');
             const response = await axios.get('http://localhost:4000/api/noteRoutes/user/notes', {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setNotes(response.data);
-        } catch (error) {
-            console.error('Error fetching notes:', error);
-            if (axios.isAxiosError(error) && error.response?.status === 401) {
-                localStorage.removeItem('token');
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                setNotes(response.data);
+            } catch (error) {
+                console.error('Error fetching notes:', error);
+                if (axios.isAxiosError(error) && error.response?.status === 401) {
+                    localStorage.removeItem('token');
                 navigate('/login');
-            }
+                }
         } finally {
             setIsLoading(false);
-        }
-    };
+            }
+        };
 
     const handleNoteCreated = async (newNote: Note) => {
         setNotes(prevNotes => [...prevNotes, newNote]);
@@ -87,7 +87,7 @@ const UserNotes: React.FC = () => {
                     >
                         ← Back to Dashboard
                     </button>
-                    <h1>Notes & Flashcards</h1>
+                <h1>Notes & Flashcards</h1>
                 </div>
                 <button 
                     className="action-button"
@@ -106,21 +106,21 @@ const UserNotes: React.FC = () => {
                         <p>No notes yet. Create your first note to get started!</p>
                     </div>
                 ) : (
-                    <div className="notes-grid">
+                <div className="notes-grid">
                         {isCreating && (
                             <NoteCard
                                 onNoteCreated={handleNoteCreated}
                             />
                         )}
-                        {notes.map(note => (
+                    {notes.map(note => (
                             <NoteCard
                                 key={note._id}
                                 note={note}
                                 onNoteUpdated={handleNoteUpdated}
                                 onNoteDeleted={handleNoteDeleted}
                             />
-                        ))}
-                    </div>
+                                ))}
+                            </div>
                 )}
             </div>
         </div>

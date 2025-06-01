@@ -23,15 +23,28 @@ const resourceSchema = new Schema(
       required: true,
       trim: true,
     },
+    type: {
+      type: String,
+      enum: ['document', 'video', 'link', 'other'],
+      default: 'link',
+    },
     uploadedBy: {
       type: Schema.Types.ObjectId,
-      ref: 'UserAuth', 
+      ref: 'UserAuth', // Changed back to UserAuth to match the model name
       required: true,
     },
+    tags: [{
+      type: String,
+      trim: true,
+    }],
     createdAt: {
       type: Date,
       default: Date.now,
     },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    }
   },
   { timestamps: true }
 );
