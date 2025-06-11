@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import "../styles/Register.css";
-import InputField from '../components/InputField';
-import Button from '../components/Button';
 
-const RegisterAdmin = () => {
+const RegisterAdmin: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     password: '',
@@ -27,67 +25,81 @@ const RegisterAdmin = () => {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form data being sent:', formData);
     try {
-      await axios.post("/api/authRoutes/register", formData);
+      const response = await axios.post("/api/authRoutes/register", formData);
+      console.log('Registration response:', response.data);
+      
+      // Store the token and user data
+      const { token, user } = response.data;
+      localStorage.setItem('token', token);
+      localStorage.setItem('email', user.email);
+      
       navigate('/admin');
-    } catch (err) {
+    } catch (err: any) {
+      console.error('Registration error:', err.response?.data || err);
       setError("Failed to register as 'Admin'. Please try again.");
     }
   };
 
   return (
     <div className="register-container">
-      <h1>Register as an Admin</h1>
-      <form className="register-form" onSubmit={handleRegister}>
-        <InputField
-          label="Name"
-          name="name"
-          type="text"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
-        <InputField
-          label="Email"
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-        <InputField
-          label="Password"
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-        <InputField
-          label="Role"
-          name="role"
-          type="select"
-          value={formData.role}
-          onChange={handleChange}
-          options={['student', 'admin']}
-        />
-        {error && <p className="error-message">{error}</p>}
-        <Button
-          border="none"
-          color="#3498db"
-          height="50px"
-          onClick={() => {}} // Empty handler since form submission is handled by onSubmit
-          radius="6px"
-          width="100%"
-          style={{
-            marginTop: "1rem",
-            fontSize: "1.1rem"
-          }}
-          type="submit"
-        >
-          Register
-        </Button>
-      </form>
+      <div className="register-form">
+        <h1>Register as an Admin</h1>
+        <form onSubmit={handleRegister}>
+          <div className="form-group">
+            <label>Name:</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label>Email:</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label>Password:</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label>Role:</label>
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              className="form-group input"
+            >
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          {error && <p className="error-message">{error}</p>}
+          <button className="register-button" type="submit">
+            Register
+          </button>
+        </form>
+      </div>
+      <div className="back-button-container">
+        <button className="button-49" role="button" onClick={() => navigate('/')}>
+          Back to Home
+        </button>
+      </div>
     </div>
   );
 };

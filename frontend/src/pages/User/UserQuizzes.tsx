@@ -200,22 +200,24 @@ const UserQuizzes: React.FC = () => {
         .sort((a, b) => new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime());
 
     if (loading) {
-    return (
-            <div className="quiz-page-container">
-                <div className="loading-container">
-                    <CircularProgress />
+        return (
+            <div className="quiz-page">
+                <div className="quiz-page-container">
+                    <div className="loading-container">
+                        <CircularProgress />
+                    </div>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="quiz-page-container">
-            <div className="quizzes-container">
-                <div className="quizzes-header">
-                    <div className="header-top">
-                        <div className="header-top-row">
-                            <div className="title-section">
+        <div className="quiz-page">
+            <div className="quiz-page-container">
+                <div className="quizzes-container">
+                    <div className="quizzes-header">
+                        <div className="header-top">
+                            <div className="header-top-row">
                                 <Button
                                     className="back-button"
                                     onClick={() => navigate('/user')}
@@ -223,213 +225,215 @@ const UserQuizzes: React.FC = () => {
                                 >
                                     Back to Dashboard
                                 </Button>
-                                <Typography variant="h4" className="quizzes-title">
-                                    Quizzes
-                                </Typography>
-                            </div>
-                            <div className="create-quiz-section">
-                                <FormControl className="group-select">
-                                    <InputLabel>Select Group</InputLabel>
-                                    <Select
-                                        value={selectedGroup}
-                                        onChange={(e) => setSelectedGroup(e.target.value)}
-                                        label="Select Group"
-                                        error={!!error}
+                                <div className="title-section">
+                                    <Typography variant="h4" className="quizzes-title">
+                                        Quiz Dashboard
+                                    </Typography>
+                                </div>
+                                <div className="create-quiz-section">
+                                    <FormControl className="group-select">
+                                        <InputLabel>Select Group</InputLabel>
+                                        <Select
+                                            value={selectedGroup}
+                                            onChange={(e) => setSelectedGroup(e.target.value)}
+                                            label="Select Group"
+                                            error={!!error}
+                                        >
+                                            {groups && groups.length > 0 ? (
+                                                groups.map(group => (
+                                                    <MenuItem key={group._id} value={group._id}>
+                                                        {group.name}
+                                                    </MenuItem>
+                                                ))
+                                            ) : (
+                                                <MenuItem disabled>No groups available</MenuItem>
+                                            )}
+                                        </Select>
+                                    </FormControl>
+                                    <Button 
+                                        variant="contained" 
+                                        className="create-quiz-button"
+                                        onClick={handleCreateQuiz}
+                                        startIcon={<AddIcon />}
+                                        disabled={!selectedGroup}
                                     >
-                                        {groups && groups.length > 0 ? (
-                                            groups.map(group => (
-                                                <MenuItem key={group._id} value={group._id}>
-                                                    {group.name}
-                                                </MenuItem>
-                                            ))
-                                        ) : (
-                                            <MenuItem disabled>No groups available</MenuItem>
-                                        )}
-                                    </Select>
-                                </FormControl>
-                                <Button 
-                                    variant="contained" 
-                                    className="create-quiz-button"
-                                    onClick={handleCreateQuiz}
-                                    startIcon={<AddIcon />}
-                                    disabled={!selectedGroup}
-                                >
-                                    Create Quiz
-                                </Button>
+                                        Create Quiz
+                                    </Button>
+                                </div>
                             </div>
                         </div>
+                        <div className="quiz-filters">
+                            <TextField
+                                fullWidth
+                                variant="outlined"
+                                placeholder="Search quizzes..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="search-input"
+                                InputProps={{
+                                    startAdornment: (
+                                        <SearchIcon />
+                                    ),
+                                }}
+                            />
+                            <TextField
+                                select
+                                value={filter}
+                                onChange={(e) => setFilter(e.target.value)}
+                                className="filter-select"
+                                variant="outlined"
+                            >
+                                <MenuItem value="all">All Quizzes</MenuItem>
+                                <MenuItem value="not_started">Not Started</MenuItem>
+                                <MenuItem value="in-progress">In Progress</MenuItem>
+                                <MenuItem value="completed">Completed</MenuItem>
+                            </TextField>
+                        </div>
                     </div>
-                    <div className="quiz-filters">
-                        <TextField
-                            fullWidth
-                            variant="outlined"
-                            placeholder="Search quizzes..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="search-input"
-                            InputProps={{
-                                startAdornment: (
-                                    <SearchIcon />
-                                ),
-                            }}
-                        />
-                        <TextField
-                            select
-                            value={filter}
-                            onChange={(e) => setFilter(e.target.value)}
-                            className="filter-select"
-                            variant="outlined"
-                        >
-                            <MenuItem value="all">All Quizzes</MenuItem>
-                            <MenuItem value="not_started">Not Started</MenuItem>
-                            <MenuItem value="in-progress">In Progress</MenuItem>
-                            <MenuItem value="completed">Completed</MenuItem>
-                        </TextField>
-                    </div>
-                </div>
 
-                {error && (
-                    <Typography color="error" className="error-message">
-                        {error}
-                    </Typography>
-                )}
-
-                {filteredQuizzes.length === 0 ? (
-                    <div className="empty-state">
-                        <div className="empty-state-icon">📝</div>
-                        <Typography variant="h6">
-                            {searchTerm ? 'No quizzes match your search' : 'No quizzes available'}
+                    {error && (
+                        <Typography color="error" className="error-message">
+                            {error}
                         </Typography>
-                    </div>
-                ) : (
-                    <div className="quiz-list">
-                        {filteredQuizzes.map(quiz => {
-                            const status = getQuizStatus(quiz);
-                            const score = getQuizScore(quiz);
-                            
-                            return (
-                                <div key={quiz._id} className="quiz-card">
-                                    <div className="quiz-card-content">
-                                        <div className="quiz-header">
-                                            <Typography variant="h6">{quiz.title}</Typography>
-                                            <IconButton
-                                                onClick={() => handleDeleteClick(quiz._id)}
-                                                className="delete-button"
-                                                size="small"
-                                            >
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </div>
-                                        <Typography variant="body2" color="textSecondary">
-                                            {quiz.description}
-                                        </Typography>
-                                        <div className="quiz-details">
-                                            <Typography variant="body2">
-                                                Questions: {quiz.questionCount}
-                                            </Typography>
-                                            {quiz.timeLimit && (
-                                                <Typography variant="body2">
-                                                    Time Limit: {quiz.timeLimit} minutes
-                                                </Typography>
-                                            )}
-                            </div>
-                            <div className="quiz-status">
-                                            <Typography variant="body2">
-                                                Status: {status}
-                                            </Typography>
-                                            {score !== null && (
-                                                <Typography variant="body2">
-                                                    Score: {score}%
-                                                </Typography>
-                                )}
-                            </div>
-                            <div className="quiz-actions">
-                                            {status === 'not_started' && (
-                                                <Button 
-                                                    variant="contained" 
-                                                    className="quiz-button start-button"
-                                                    onClick={() => {
-                                                        const groupIdStr = typeof quiz.groupId === 'object' && quiz.groupId !== null 
-                                                            ? quiz.groupId._id 
-                                                            : String(quiz.groupId);
-                                                        navigate(`/groups/${groupIdStr}/quizzes/${quiz._id}`);
-                                                    }}
+                    )}
+
+                    {filteredQuizzes.length === 0 ? (
+                        <div className="empty-state">
+                            <div className="empty-state-icon">📝</div>
+                            <Typography variant="h6">
+                                {searchTerm ? 'No quizzes match your search' : 'No quizzes available'}
+                            </Typography>
+                        </div>
+                    ) : (
+                        <div className="quiz-list">
+                            {filteredQuizzes.map(quiz => {
+                                const status = getQuizStatus(quiz);
+                                const score = getQuizScore(quiz);
+                                
+                                return (
+                                    <div key={quiz._id} className="quiz-card">
+                                        <div className="quiz-card-content">
+                                            <div className="quiz-header">
+                                                <Typography variant="h6">{quiz.title}</Typography>
+                                                <IconButton
+                                                    onClick={() => handleDeleteClick(quiz._id)}
+                                                    className="delete-button"
+                                                    size="small"
                                                 >
-                                                    Start Quiz
-                                                </Button>
-                                )}
-                                            {status === 'in-progress' && (
-                                                <Button 
-                                                    variant="contained" 
-                                                    className="quiz-button start-button"
-                                                    onClick={() => {
-                                                        const groupIdStr = typeof quiz.groupId === 'object' && quiz.groupId !== null 
-                                                            ? quiz.groupId._id 
-                                                            : String(quiz.groupId);
-                                                        navigate(`/groups/${groupIdStr}/quizzes/${quiz._id}`);
-                                                    }}
-                                                >
-                                                    Continue Quiz
-                                                </Button>
-                                )}
-                                            {status === 'completed' && (
-                                                <>
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </div>
+                                            <Typography variant="body2" color="textSecondary">
+                                                {quiz.description}
+                                            </Typography>
+                                            <div className="quiz-details">
+                                                <Typography variant="body2">
+                                                    Questions: {quiz.questionCount}
+                                                </Typography>
+                                                {quiz.timeLimit && (
+                                                    <Typography variant="body2">
+                                                        Time Limit: {quiz.timeLimit} minutes
+                                                    </Typography>
+                                                )}
+                                            </div>
+                                            <div className="quiz-status">
+                                                <Typography variant="body2">
+                                                    Status: {status}
+                                                </Typography>
+                                                {score !== null && (
+                                                    <Typography variant="body2">
+                                                        Score: {score}%
+                                                    </Typography>
+                                                )}
+                                            </div>
+                                            <div className="quiz-actions">
+                                                {status === 'not_started' && (
                                                     <Button 
-                                                        variant="outlined" 
-                                                        className="quiz-button edit-button"
+                                                        variant="contained" 
+                                                        className="quiz-button start-button"
                                                         onClick={() => {
                                                             const groupIdStr = typeof quiz.groupId === 'object' && quiz.groupId !== null 
                                                                 ? quiz.groupId._id 
                                                                 : String(quiz.groupId);
-                                                            navigate(`/groups/${groupIdStr}/quizzes/${quiz._id}/results`);
+                                                            navigate(`/groups/${groupIdStr}/quizzes/${quiz._id}`);
                                                         }}
                                                     >
-                                                        View Results {score !== null && `(${score}%)`}
+                                                        Start Quiz
                                                     </Button>
-                                                    {canRetakeQuiz(quiz) && (
+                                                )}
+                                                {status === 'in-progress' && (
+                                                    <Button 
+                                                        variant="contained" 
+                                                        className="quiz-button start-button"
+                                                        onClick={() => {
+                                                            const groupIdStr = typeof quiz.groupId === 'object' && quiz.groupId !== null 
+                                                                ? quiz.groupId._id 
+                                                                : String(quiz.groupId);
+                                                            navigate(`/groups/${groupIdStr}/quizzes/${quiz._id}`);
+                                                        }}
+                                                    >
+                                                        Continue Quiz
+                                                    </Button>
+                                                )}
+                                                {status === 'completed' && (
+                                                    <>
                                                         <Button 
-                                                            variant="contained" 
-                                                            className="quiz-button retake-button"
+                                                            variant="outlined" 
+                                                            className="quiz-button edit-button"
                                                             onClick={() => {
                                                                 const groupIdStr = typeof quiz.groupId === 'object' && quiz.groupId !== null 
                                                                     ? quiz.groupId._id 
                                                                     : String(quiz.groupId);
-                                                                navigate(`/groups/${groupIdStr}/quizzes/${quiz._id}`);
+                                                                navigate(`/groups/${groupIdStr}/quizzes/${quiz._id}/results`);
                                                             }}
                                                         >
-                                                            Retake Quiz
+                                                            View Results {score !== null && `(${score}%)`}
                                                         </Button>
-                                                    )}
-                                                </>
-                                )}
-                            </div>
+                                                        {canRetakeQuiz(quiz) && (
+                                                            <Button 
+                                                                variant="contained" 
+                                                                className="quiz-button retake-button"
+                                                                onClick={() => {
+                                                                    const groupIdStr = typeof quiz.groupId === 'object' && quiz.groupId !== null 
+                                                                        ? quiz.groupId._id 
+                                                                        : String(quiz.groupId);
+                                                                    navigate(`/groups/${groupIdStr}/quizzes/${quiz._id}`);
+                                                                }}
+                                                            >
+                                                                Retake Quiz
+                                                            </Button>
+                                                        )}
+                                                    </>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
-                                </div>
-                            );
-                        })}
+                    )}
                 </div>
-                )}
-
-                <Dialog
-                    open={deleteDialogOpen}
-                    onClose={handleDeleteCancel}
-                >
-                    <DialogTitle>Delete Quiz</DialogTitle>
-                    <DialogContent>
-                        <Typography>
-                            Are you sure you want to delete this quiz? This action cannot be undone.
-                        </Typography>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleDeleteCancel} color="primary">
-                            Cancel
-                        </Button>
-                        <Button onClick={handleDeleteConfirm} color="error" variant="contained">
-                            Delete
-                        </Button>
-                    </DialogActions>
-                </Dialog>
             </div>
+
+            <Dialog
+                open={deleteDialogOpen}
+                onClose={handleDeleteCancel}
+            >
+                <DialogTitle>Delete Quiz</DialogTitle>
+                <DialogContent>
+                    <Typography>
+                        Are you sure you want to delete this quiz? This action cannot be undone.
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDeleteCancel} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleDeleteConfirm} color="error" variant="contained">
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 };

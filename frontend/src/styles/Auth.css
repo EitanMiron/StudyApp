@@ -1,0 +1,132 @@
+/* Auth pages specific styles */
+.auth-page {
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-page::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('../assets/auth-background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    z-index: -2;
+}
+
+.auth-page::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+}
+
+.auth-container {
+    width: 90%;
+    max-width: 450px;
+    padding: 2.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    margin: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.auth-container h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 1.8rem;
+    font-size: 1.8rem;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.form-group label {
+    font-size: 1rem;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.form-group input {
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    text-align: center;
+    margin: -0.5rem 0 0.5rem;
+}
+
+.auth-button {
+    background-color: #3498db;
+    color: white;
+    padding: 1rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+    width: 100%;
+}
+
+.auth-button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+.auth-button:active {
+    transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .auth-container {
+        padding: 1.8rem;
+        margin: 15px;
+    }
+    
+    .auth-container h1 {
+        font-size: 1.6rem;
+    }
+    
+    .form-group input {
+        padding: 0.8rem;
+    }
+} 

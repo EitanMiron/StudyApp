@@ -92,7 +92,12 @@ router.post('/groups/:groupId/quizzes/:quizId/submit', authenticateToken, async 
             user: userId,
             status: 'completed',
             score,
-            submittedAt: new Date()
+            submittedAt: new Date(),
+            answers: answers.map((answer, index) => ({
+                questionId: quiz.questions[index]._id,
+                selectedOption: answer,
+                isCorrect: answer === quiz.questions[index].options.find(opt => opt.isCorrect)?._id.toString()
+            }))
         };
 
         // Update quiz with new submission

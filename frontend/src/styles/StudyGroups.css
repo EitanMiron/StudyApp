@@ -86,8 +86,8 @@ body {
 .study-groups-container .create-group-button {
     background: linear-gradient(45deg, #2A7B9B, #57C785) !important;
     color: white !important;
-    padding: 0.8rem 2rem !important;
-    border-radius: 12px !important;
+    padding: 0.5rem 2.0rem !important;
+    border-radius: 30px !important;
     font-weight: 600 !important;
     text-transform: none !important;
     transition: all 0.3s ease !important;

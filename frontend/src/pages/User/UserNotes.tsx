@@ -4,6 +4,11 @@ import axios from 'axios';
 import NoteCard from '../../components/NoteCard';
 import { useDashboardData } from '../../hooks/useDashboardData';
 import "../../styles/userNotes.css";
+import FolderIcon from '@mui/icons-material/Folder';
+import ShareIcon from '@mui/icons-material/Share';
+import DownloadIcon from '@mui/icons-material/Download';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
+import AddIcon from '@mui/icons-material/Add';
 
 interface Flashcard {
   question: string;
@@ -33,6 +38,14 @@ const UserNotes: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const { fetchDashboardData } = useDashboardData();
+    const [folders, setFolders] = useState<string[]>(['General', 'Math', 'Science', 'History']);
+    const [selectedFolder, setSelectedFolder] = useState<string>('General');
+    const [aiQuestions, setAiQuestions] = useState<Array<{ question: string; answer: string }>>([
+        { question: "What is the main concept of this note?", answer: "" },
+        { question: "Can you explain this in simpler terms?", answer: "" },
+        { question: "What are the key points to remember?", answer: "" }
+    ]);
+    const [selectedNote, setSelectedNote] = useState<Note | null>(null);
 
     useEffect(() => {
         fetchNotes();
@@ -77,51 +90,161 @@ const UserNotes: React.FC = () => {
         await fetchDashboardData(); // Refresh dashboard data
     };
 
+    const handleFolderSelect = (folder: string) => {
+        setSelectedFolder(folder);
+    };
+
+    const handleDownloadNote = (note: Note) => {
+        const content = `${note.term}\n\n${note.definition}`;
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${note.term}.txt`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    };
+
+    const handleShareNote = (note: Note) => {
+        // Implement sharing functionality
+        console.log('Sharing note:', note);
+    };
+
+    const handleAiQuestionClick = (question: string) => {
+        setSelectedNote(notes.find(note => note.term === question) || null);
+        // Here you would typically make an API call to get the AI-generated answer
+        // For now, we'll just set a placeholder answer
+        const updatedQuestions = aiQuestions.map(q => 
+            q.question === question 
+                ? { ...q, answer: "This is a placeholder answer. The actual AI integration will be implemented later." }
+                : q
+        );
+        setAiQuestions(updatedQuestions);
+    };
+
     return (
-        <div className="user-notes-page dashboard-container">
-            <div className="dashboard-header">
-                <div className="header-top">
-                    <button 
-                        className="back-button"
-                        onClick={() => navigate('/user')}
-                    >
-                        ← Back to Dashboard
+        <div className="user-notes-page">
+            {/* Left Sidebar */}
+            <div className="sidebar">
+                <div className="sidebar-section">
+                    <h3>Folders</h3>
+                    <ul className="folder-list">
+                        {folders.map(folder => (
+                            <li 
+                                key={folder}
+                                className={`folder-item ${selectedFolder === folder ? 'active' : ''}`}
+                                onClick={() => handleFolderSelect(folder)}
+                            >
+                                <FolderIcon />
+                                {folder}
+                            </li>
+                        ))}
+                    </ul>
+                    <button className="sidebar-action" style={{ marginTop: '1rem' }}>
+                        <AddIcon />
+                        New Folder
                     </button>
-                <h1>Notes & Flashcards</h1>
                 </div>
-                <button 
-                    className="action-button"
-                    onClick={() => setIsCreating(true)}
-                >
-                    Create New Note
-                </button>
             </div>
-            <div className="content-section">
-                {isLoading ? (
-                    <div className="loading-state">
-                        Loading notes...
+
+            {/* Main Content */}
+            <div className="dashboard-container">
+                <div className="dashboard-header">
+                    <div className="header-top">
+                        <button 
+                            className="back-button"
+                            onClick={() => navigate('/user')}
+                        >
+                            ← Back to Dashboard
+                        </button>
+                    <h1>Notes & Flashcards</h1>
                     </div>
-                ) : notes.length === 0 && !isCreating ? (
-                    <div className="empty-state">
-                        <p>No notes yet. Create your first note to get started!</p>
-                    </div>
-                ) : (
-                <div className="notes-grid">
-                        {isCreating && (
-                            <NoteCard
-                                onNoteCreated={handleNoteCreated}
-                            />
-                        )}
-                    {notes.map(note => (
+                    <button 
+                        className="action-button"
+                        onClick={() => setIsCreating(true)}
+                    >
+                        Create New Note
+                    </button>
+                </div>
+                <div className="content-section">
+                    {isLoading ? (
+                        <div className="loading-state">
+                            Loading notes...
+                        </div>
+                    ) : notes.length === 0 && !isCreating ? (
+                        <div className="empty-state">
+                            <p>No notes yet. Create your first note to get started!</p>
+                        </div>
+                    ) : (
+                    <div className="notes-grid">
+                        {notes.map(note => (
                             <NoteCard
                                 key={note._id}
                                 note={note}
                                 onNoteUpdated={handleNoteUpdated}
                                 onNoteDeleted={handleNoteDeleted}
                             />
-                                ))}
+                        ))}
+                        {!isCreating && (
+                            <button 
+                                className="add-note-button"
+                                onClick={() => setIsCreating(true)}
+                            >
+                                +
+                            </button>
+                        )}
+                        {isCreating && (
+                            <NoteCard
+                                onNoteCreated={handleNoteCreated}
+                            />
+                        )}
+                    </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Right Sidebar */}
+            <div className="sidebar right">
+                <div className="sidebar-section">
+                    <h3>Note Actions</h3>
+                    {selectedNote && (
+                        <>
+                            <button 
+                                className="sidebar-action"
+                                onClick={() => handleDownloadNote(selectedNote)}
+                            >
+                                <DownloadIcon />
+                                Download as TXT
+                            </button>
+                            <button 
+                                className="sidebar-action"
+                                onClick={() => handleShareNote(selectedNote)}
+                            >
+                                <ShareIcon />
+                                Share Note
+                            </button>
+                        </>
+                    )}
+                </div>
+
+                <div className="sidebar-section">
+                    <h3>AI Study Assistant</h3>
+                    <div className="ai-questions">
+                        {aiQuestions.map((q, index) => (
+                            <div key={index} className="ai-question" onClick={() => handleAiQuestionClick(q.question)}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <SmartToyIcon />
+                                    {q.question}
+                                </div>
+                                {q.answer && (
+                                    <div className="ai-answer">
+                                        {q.answer}
+                                    </div>
+                                )}
                             </div>
-                )}
+                        ))}
+                    </div>
+                </div>
             </div>
         </div>
     );

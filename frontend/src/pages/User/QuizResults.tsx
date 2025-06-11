@@ -19,7 +19,7 @@ import {
     TableCell,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import '../../styles/UserQuizzes.css';
+import '../../styles/QuizTaking.css';
 
 interface Question {
     _id: string;
@@ -33,36 +33,20 @@ interface Question {
     isCorrect?: boolean;
 }
 
-interface QuizResult {
-    _id: string;
-    quiz: {
-        _id: string;
-        title: string;
-        description: string;
-        questions: Question[];
-    };
-    score: number;
-    totalQuestions: number;
-    completedAt: string;
-}
-
 interface Quiz {
     _id: string;
     title: string;
     description: string;
-    questions: Array<{
-        _id: string;
-        questionText: string;
-        options: Array<{
-            _id: string;
-            optionText: string;
-            isCorrect: boolean;
-        }>;
-    }>;
+    questions: Question[];
     submissions: Array<{
         status: 'completed';
         score: number;
         submittedAt: string;
+        answers: Array<{
+            questionId: string;
+            selectedOption: string;
+            isCorrect: boolean;
+        }>;
     }>;
     maxAttempts: number;
     groupId: string | { _id: string };
@@ -103,24 +87,36 @@ const QuizResults: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="loading-container">
-                <CircularProgress />
+            <div className="quiz-page">
+                <div className="quiz-page-container">
+                    <div className="loading-container">
+                        <CircularProgress />
+                    </div>
+                </div>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="error-container">
-                <Typography color="error">{error}</Typography>
+            <div className="quiz-page">
+                <div className="quiz-page-container">
+                    <div className="error-container">
+                        <Typography color="error">{error}</Typography>
+                    </div>
+                </div>
             </div>
         );
     }
 
     if (!quiz) {
         return (
-            <div className="error-container">
-                <Typography color="error">Quiz not found</Typography>
+            <div className="quiz-page">
+                <div className="quiz-page-container">
+                    <div className="error-container">
+                        <Typography color="error">Quiz not found</Typography>
+                    </div>
+                </div>
             </div>
         );
     }
@@ -129,82 +125,141 @@ const QuizResults: React.FC = () => {
         return new Date(dateString).toLocaleString();
     };
 
+    // Sort submissions by submission date (newest first)
+    const sortedSubmissions = [...quiz.submissions].sort((a, b) => 
+        new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
+    );
+    const latestSubmission = sortedSubmissions[0];
+    
+    // Calculate correct answers using the latest submission's answers
+    const correctAnswers = latestSubmission ? quiz.questions.reduce((count, question, index) => {
+        const submissionAnswer = latestSubmission.answers.find(a => a.questionId === question._id);
+        const isCorrect = submissionAnswer?.isCorrect || false;
+        console.log('Question:', {
+            questionText: question.questionText,
+            userAnswer: submissionAnswer?.selectedOption,
+            correctOptionId: question.options.find(opt => opt.isCorrect)?._id,
+            isCorrect,
+            options: question.options,
+            submissionAnswer
+        });
+        return isCorrect ? count + 1 : count;
+    }, 0) : 0;
+    
+    const totalQuestions = quiz.questions.length;
+    const score = latestSubmission ? latestSubmission.score : 0;
+
+    console.log('Quiz Results:', {
+        totalQuestions,
+        correctAnswers,
+        score,
+        latestSubmission: {
+            ...latestSubmission,
+            answers: latestSubmission?.answers
+        },
+        questions: quiz.questions.map((q, index) => ({
+            text: q.questionText,
+            userAnswer: latestSubmission?.answers[index],
+            correctOption: q.options.find(opt => opt.isCorrect)?._id,
+            options: q.options
+        }))
+    });
+
     return (
-        <div className="quiz-results-container">
-            <div className="quiz-header">
-                <div className="header-top">
-                    <div className="header-top-row">
-                        <div className="title-section">
-                            <Button
-                                className="back-button"
-                                onClick={() => navigate('/quizzes')}
-                                startIcon={<ArrowBackIcon />}
-                            >
-                                Back to Quizzes
-                            </Button>
-                            <Typography variant="h4" className="quiz-title">
-                                {quiz.title} - Results
-                            </Typography>
+        <div className="quiz-page">
+            <div className="quiz-page-container">
+                <div className="results-container">
+                    <div className="results-header">
+                        <div className="header-top">
+                            <div className="header-top-row">
+                                <Button
+                                    className="back-button"
+                                    onClick={() => navigate('/quizzes')}
+                                    startIcon={<ArrowBackIcon />}
+                                >
+                                    Back to Quizzes
+                                </Button>
+                                <div className="title-section">
+                                    <Typography variant="h4" className="quiz-title">
+                                        {quiz.title} - Results
+                                    </Typography>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <div className="results-summary">
+                        <div className="summary-item">
+                            <Typography className="summary-label">Score</Typography>
+                            <Typography className="summary-value">{score}%</Typography>
+                        </div>
+                        <div className="summary-item">
+                            <Typography className="summary-label">Correct Answers</Typography>
+                            <Typography className="summary-value">{correctAnswers}/{totalQuestions}</Typography>
+                        </div>
+                        <div className="summary-item">
+                            <Typography className="summary-label">Attempts</Typography>
+                            <Typography className="summary-value">{quiz.submissions.length}/{quiz.maxAttempts}</Typography>
+                        </div>
+                    </div>
+
+                    <Paper className="results-section">
+                        <Typography variant="h6" gutterBottom>
+                            Quiz Details
+                        </Typography>
+                        <Typography variant="body1" paragraph>
+                            {quiz.description}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
+                            Total Questions: {quiz.questions.length}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
+                            Maximum Attempts: {quiz.maxAttempts}
+                        </Typography>
+                    </Paper>
+
+                    <Paper className="results-section">
+                        <Typography variant="h6" gutterBottom>
+                            Attempt History
+                        </Typography>
+                        <TableContainer>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Attempt</TableCell>
+                                        <TableCell>Score</TableCell>
+                                        <TableCell>Submitted At</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {sortedSubmissions.map((submission, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell>Attempt {quiz.submissions.length - index}</TableCell>
+                                            <TableCell>{submission.score}%</TableCell>
+                                            <TableCell>{formatDate(submission.submittedAt)}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Paper>
+
+                    <div className="results-actions">
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => {
+                                const groupIdStr = typeof quiz.groupId === 'object' && quiz.groupId !== null 
+                                    ? quiz.groupId._id 
+                                    : String(quiz.groupId);
+                                navigate(`/groups/${groupIdStr}/quizzes/${quiz._id}`);
+                            }}
+                            disabled={quiz.submissions.length >= quiz.maxAttempts}
+                        >
+                            {quiz.submissions.length >= quiz.maxAttempts ? 'Maximum Attempts Reached' : 'Retake Quiz'}
+                        </Button>
+                    </div>
                 </div>
-            </div>
-
-            <Paper className="results-section">
-                <Typography variant="h6" gutterBottom>
-                    Quiz Attempts
-                </Typography>
-                <TableContainer>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Attempt</TableCell>
-                                <TableCell>Score</TableCell>
-                                <TableCell>Submitted At</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {quiz.submissions.map((submission, index) => (
-                                <TableRow key={index}>
-                                    <TableCell>Attempt {index + 1}</TableCell>
-                                    <TableCell>{submission.score}%</TableCell>
-                                    <TableCell>{formatDate(submission.submittedAt)}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Paper>
-
-            <Paper className="results-section">
-                <Typography variant="h6" gutterBottom>
-                    Quiz Details
-                </Typography>
-                <Typography variant="body1" paragraph>
-                    {quiz.description}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                    Total Questions: {quiz.questions.length}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                    Maximum Attempts: {quiz.maxAttempts}
-                </Typography>
-            </Paper>
-
-            <div className="action-buttons">
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                        const groupIdStr = typeof quiz.groupId === 'object' && quiz.groupId !== null 
-                            ? quiz.groupId._id 
-                            : String(quiz.groupId);
-                        navigate(`/groups/${groupIdStr}/quizzes/${quiz._id}`);
-                    }}
-                    disabled={quiz.submissions.length >= quiz.maxAttempts}
-                >
-                    {quiz.submissions.length >= quiz.maxAttempts ? 'Maximum Attempts Reached' : 'Retake Quiz'}
-                </Button>
             </div>
         </div>
     );

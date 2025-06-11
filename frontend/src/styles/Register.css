@@ -24,107 +24,210 @@ body {
   }
   
   .register-container {
-    width: 90%;
-    max-width: 500px;
-    padding: 2.5rem;
-    /*background-color: rgba(255, 255, 255, 0.9);*/ /* Semi-transparent white */
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    margin: 20px;
-    backdrop-filter: blur(1.5px); /* Subtle blur effect */
-  }
-  
-  .register-container h1 {
-    text-align: center;
-    color: #ffffff;
-    margin-bottom: 1.8rem;
-    font-size: 1.8rem;
-  }
-  
-  /* Form styling */
-  .register-container form {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: 1.8rem;
-    color: white;
+    min-height: 100vh;
+    width: 100vw;
+    position: relative;
+    overflow: hidden;
   }
   
-  /* Input field styling */
-  .form-field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    
-  }
-  
-  /* Enhance contrast for form elements */
-.form-field label {
-    color: #2c3e50; /* Darker for better contrast */
-    font-weight: 600;
-  }
-  
-  .form-field input,
-  .form-field select {
-    padding: 0.9rem;
-    border: 1px solid #904a4a;
-    border-radius: 6px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
+  .register-container::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    box-sizing: border-box;
+    height: 100%;
+    background-image: url('https://images.unsplash.com/photo-1501504905252-473c47e087f8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+    background-size: cover;
+    background-position: center;
+    z-index: -2;
   }
   
-  .form-field input:focus,
-  .form-field select:focus {
-    outline: none;
-    border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+  .register-container::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
   }
   
-  /* Select dropdown styling */
-  .form-field select {
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1rem;
+  .register-form {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    margin: 1rem;
   }
-  .registerButton {
+  
+  .register-form h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+  
+  .register-button {
+    width: 100%;
+    padding: 0.75rem;
     background-color: #3498db;
     color: white;
-    padding: 1.0rem;
     border: none;
-    border-radius: 6px;
-    font-size: 1.1rem;
-    font-weight: 600;
+    border-radius: 4px;
+    font-size: 1rem;
     cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 0.5rem;
-    width: 100%;
+    transition: background-color 0.3s ease;
   }
   
   .register-button:hover {
     background-color: #2980b9;
-    transform: translateY(-2px);
   }
   
-  .register-button:active {
-    transform: translateY(0);
-  }
-  
-  /* Error message styling */
-  .error-text {
+  .error-message {
     color: #e74c3c;
-    font-size: 0.9rem;
     text-align: center;
-    margin-top: -0.8rem;
-    margin-bottom: 0.5rem;
+    margin-top: 1rem;
   }
   
   /* Responsive adjustments for background */
-@media (max-width: 768px) {
-    body {
-      background-attachment: scroll; /* Fixes mobile rendering issues */
+@media (max-width: 480px) {
+    .register-form {
+      margin: 1rem;
+      padding: 1.5rem;
     }
   }
+
+/* Back to Home Button */
+.button-49,
+.button-49:after {
+  width: 150px;
+  height: 76px;
+  line-height: 78px;
+  font-size: 20px;
+  font-family: 'Bebas Neue', sans-serif;
+  background: linear-gradient(45deg, transparent 5%, #FF013C 5%);
+  border: 0;
+  color: #fff;
+  letter-spacing: 3px;
+  box-shadow: 6px 0px 0px #00E6F6;
+  outline: transparent;
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-49:after {
+  --slice-0: inset(50% 50% 50% 50%);
+  --slice-1: inset(80% -6px 0 0);
+  --slice-2: inset(50% -6px 30% 0);
+  --slice-3: inset(10% -6px 85% 0);
+  --slice-4: inset(40% -6px 43% 0);
+  --slice-5: inset(80% -6px 5% 0);
+  
+  content: 'ALTERNATE TEXT';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 3%, #00E6F6 3%, #00E6F6 5%, #FF013C 5%);
+  text-shadow: -3px -3px 0px #F8F005, 3px 3px 0px #00E6F6;
+  clip-path: var(--slice-0);
+}
+
+.button-49:hover:after {
+  animation: 1s glitch;
+  animation-timing-function: steps(2, end);
+}
+
+@keyframes glitch {
+  0% {
+    clip-path: var(--slice-1);
+    transform: translate(-20px, -10px);
+  }
+  10% {
+    clip-path: var(--slice-3);
+    transform: translate(10px, 10px);
+  }
+  20% {
+    clip-path: var(--slice-1);
+    transform: translate(-10px, 10px);
+  }
+  30% {
+    clip-path: var(--slice-3);
+    transform: translate(0px, 5px);
+  }
+  40% {
+    clip-path: var(--slice-2);
+    transform: translate(-5px, 0px);
+  }
+  50% {
+    clip-path: var(--slice-3);
+    transform: translate(5px, 0px);
+  }
+  60% {
+    clip-path: var(--slice-4);
+    transform: translate(5px, 10px);
+  }
+  70% {
+    clip-path: var(--slice-2);
+    transform: translate(-10px, 10px);
+  }
+  80% {
+    clip-path: var(--slice-5);
+    transform: translate(20px, -10px);
+  }
+  90% {
+    clip-path: var(--slice-1);
+    transform: translate(-10px, 0px);
+  }
+  100% {
+    clip-path: var(--slice-1);
+    transform: translate(0);
+  }
+}
+
+@media (min-width: 768px) {
+  .button-49,
+  .button-49:after {
+    width: 200px;
+    height: 86px;
+    line-height: 88px;
+  }
+}
+
+/* Back to Home Button Container */
+.back-button-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 20px;
+}

@@ -7,18 +7,52 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+
+# Build outputs
+dist/
+build/
+dist-ssr/
+.next/
+out/
+
+# dotenv environment variables
+.env
+.env.*  # ignore .env.local, .env.production, etc.
+
+# OS-specific files
+.DS_Store
+Thumbs.db
 
 # Editor directories and files
-.vscode/*
+.vscode/
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Optional: TypeScript
+*.tsbuildinfo
+
+# Optional: test coverage
+coverage/
+
+# Optional: local SQLite or database files
+*.sqlite
+*.db
+*.db-journal
+
+# Optional: local logs/debug data
+*.log
+*.bak
+*.tmp

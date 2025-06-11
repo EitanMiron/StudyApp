@@ -2,88 +2,82 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import "../styles/Login.css";
-import Button from '../components/Button';
 
 const LoginAdmin: React.FC = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+    });
+
+    useEffect(() => {
+        document.title = 'Admin Login';
+    }, []);
+
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    useEffect(() => {
-        document.title = "Admin Login Page";
-    }, []);
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        if (!email || !password) {
-            setError("Please enter both email and password.");
-            return;
-        }
-
         try {
-            const response = await axios.post("/api/authRoutes/login", {
-                email,
-                password
-            });
-
-            const { token, role, email: returnedEmail } = response.data;
-
-            localStorage.setItem('token', token);
-            localStorage.setItem('email', returnedEmail);
-
-            if (role === 'admin') {
-                navigate('/admin');
-            } else if (role === 'user') {
-                navigate('/');
-            } else {
-                setError("Unable to determine role from login credentials.");
+            const response = await axios.post("/api/authRoutes/login", formData);
+            const { token, role, email, id } = response.data;
+            
+            // Check if user is trying to login as regular user
+            if (role === 'user') {
+                setError("Please use the user login page");
+                return;
             }
-        } catch (err) {
-            setError("Unable to Login - Invalid Email or Password.");
+            
+            localStorage.setItem('token', token);
+            localStorage.setItem('email', email);
+            localStorage.setItem('userId', id);
+            navigate('/admin');
+        } catch (err: any) {
+            setError("Invalid email or password");
         }
     };
 
     return (
         <div className="login-container">
-            <h1>Login</h1>
-            <form className="login-form" onSubmit={handleLogin}>
-                <div className="form-group">
-                    <label>Email:</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Password:</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                {error && <p className="error-message">{error}</p>}
-                <Button
-                    border="none"
-                    color="#3498db"
-                    height="30px"
-                    onClick={() => {}} // Form submission is handled by onSubmit
-                    radius="10px"
-                    width="30%"
-                    style={{
-                        marginTop: "1rem",
-                        fontSize: "1.1rem"
-                    }}
-                    type="submit"
-                >
-                    Login
-                </Button>
-            </form>
+            <div className="login-form">
+                <h1>Login as an Admin</h1>
+                <form onSubmit={handleLogin}>
+                    <div className="form-group">
+                        <label>Email:</label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Password:</label>
+                        <input
+                            type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    {error && <p className="error-message">{error}</p>}
+                    <button className="login-button" type="submit">
+                        Login
+                    </button>
+                </form>
+            </div>
+            <div className="back-button-container">
+                <button className="button-49" role="button" onClick={() => navigate('/')}>
+                    Back to Home
+                </button>
+            </div>
         </div>
     );
 };

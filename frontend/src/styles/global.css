@@ -1,0 +1,67 @@
+/* Import Poppins font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Apply Poppins font to all elements */
+* {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+}
+
+/* Ensure Material-UI components also use Poppins */
+.MuiButton-root,
+.MuiTypography-root,
+.MuiInputBase-root,
+.MuiFormLabel-root,
+.MuiSelect-select,
+.MuiMenuItem-root,
+.MuiTableCell-root,
+.MuiTableHead-root,
+.MuiTableBody-root,
+.MuiTableRow-root,
+.MuiPaper-root,
+.MuiCard-root,
+.MuiCardContent-root,
+.MuiCardHeader-root,
+.MuiCardActions-root,
+.MuiDialog-root,
+.MuiDialogTitle-root,
+.MuiDialogContent-root,
+.MuiDialogActions-root,
+.MuiAppBar-root,
+.MuiToolbar-root,
+.MuiDrawer-root,
+.MuiList-root,
+.MuiListItem-root,
+.MuiListItemText-root,
+.MuiListItemIcon-root,
+.MuiChip-root,
+.MuiAlert-root,
+.MuiSnackbar-root,
+.MuiTooltip-root,
+.MuiPopover-root,
+.MuiMenu-root,
+.MuiMenuItem-root,
+.MuiCheckbox-root,
+.MuiRadio-root,
+.MuiSwitch-root,
+.MuiSlider-root,
+.MuiRating-root,
+.MuiAutocomplete-root,
+.MuiTabs-root,
+.MuiTab-root,
+.MuiStepLabel-root,
+.MuiStepContent-root,
+.MuiStepConnector-root,
+.MuiStepIcon-root,
+.MuiStepIconText-root,
+.MuiStepLabel-label,
+.MuiStepLabel-iconContainer,
+.MuiStepLabel-labelContainer,
+.MuiStepLabel-alternativeLabel,
+.MuiStepLabel-error,
+.MuiStepLabel-disabled,
+.MuiStepLabel-active,
+.MuiStepLabel-completed,
+.MuiStepLabel-optional {
+    font-family: 'Poppins', sans-serif !important;
+} 
