@@ -89,8 +89,8 @@ const QuizResults: React.FC = () => {
         return (
             <div className="quiz-page">
                 <div className="quiz-page-container">
-                    <div className="loading-container">
-                        <CircularProgress />
+            <div className="loading-container">
+                <CircularProgress />
                     </div>
                 </div>
             </div>
@@ -101,8 +101,8 @@ const QuizResults: React.FC = () => {
         return (
             <div className="quiz-page">
                 <div className="quiz-page-container">
-                    <div className="error-container">
-                        <Typography color="error">{error}</Typography>
+            <div className="error-container">
+                <Typography color="error">{error}</Typography>
                     </div>
                 </div>
             </div>
@@ -113,8 +113,8 @@ const QuizResults: React.FC = () => {
         return (
             <div className="quiz-page">
                 <div className="quiz-page-container">
-                    <div className="error-container">
-                        <Typography color="error">Quiz not found</Typography>
+            <div className="error-container">
+                <Typography color="error">Quiz not found</Typography>
                     </div>
                 </div>
             </div>
@@ -170,23 +170,23 @@ const QuizResults: React.FC = () => {
             <div className="quiz-page-container">
                 <div className="results-container">
                     <div className="results-header">
-                        <div className="header-top">
-                            <div className="header-top-row">
-                                <Button
-                                    className="back-button"
-                                    onClick={() => navigate('/quizzes')}
-                                    startIcon={<ArrowBackIcon />}
-                                >
-                                    Back to Quizzes
-                                </Button>
+                <div className="header-top">
+                    <div className="header-top-row">
+                            <Button
+                                className="back-button"
+                                onClick={() => navigate('/quizzes')}
+                                startIcon={<ArrowBackIcon />}
+                            >
+                                Back to Quizzes
+                            </Button>
                                 <div className="title-section">
-                                    <Typography variant="h4" className="quiz-title">
-                                        {quiz.title} - Results
-                                    </Typography>
-                                </div>
-                            </div>
+                            <Typography variant="h4" className="quiz-title">
+                                {quiz.title} - Results
+                            </Typography>
                         </div>
                     </div>
+                </div>
+            </div>
 
                     <div className="results-summary">
                         <div className="summary-item">
@@ -203,20 +203,20 @@ const QuizResults: React.FC = () => {
                         </div>
                     </div>
 
-                    <Paper className="results-section">
-                        <Typography variant="h6" gutterBottom>
-                            Quiz Details
-                        </Typography>
-                        <Typography variant="body1" paragraph>
-                            {quiz.description}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary">
-                            Total Questions: {quiz.questions.length}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary">
-                            Maximum Attempts: {quiz.maxAttempts}
-                        </Typography>
-                    </Paper>
+            <Paper className="results-section">
+                <Typography variant="h6" gutterBottom>
+                    Quiz Details
+                </Typography>
+                <Typography variant="body1" paragraph>
+                    {quiz.description}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                    Total Questions: {quiz.questions.length}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                    Maximum Attempts: {quiz.maxAttempts}
+                </Typography>
+            </Paper>
 
                     <Paper className="results-section">
                         <Typography variant="h6" gutterBottom>
@@ -245,19 +245,19 @@ const QuizResults: React.FC = () => {
                     </Paper>
 
                     <div className="results-actions">
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => {
-                                const groupIdStr = typeof quiz.groupId === 'object' && quiz.groupId !== null 
-                                    ? quiz.groupId._id 
-                                    : String(quiz.groupId);
-                                navigate(`/groups/${groupIdStr}/quizzes/${quiz._id}`);
-                            }}
-                            disabled={quiz.submissions.length >= quiz.maxAttempts}
-                        >
-                            {quiz.submissions.length >= quiz.maxAttempts ? 'Maximum Attempts Reached' : 'Retake Quiz'}
-                        </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                        const groupIdStr = typeof quiz.groupId === 'object' && quiz.groupId !== null 
+                            ? quiz.groupId._id 
+                            : String(quiz.groupId);
+                        navigate(`/groups/${groupIdStr}/quizzes/${quiz._id}`);
+                    }}
+                    disabled={quiz.submissions.length >= quiz.maxAttempts}
+                >
+                    {quiz.submissions.length >= quiz.maxAttempts ? 'Maximum Attempts Reached' : 'Retake Quiz'}
+                </Button>
                     </div>
                 </div>
             </div>

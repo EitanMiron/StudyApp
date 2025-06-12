@@ -362,51 +362,55 @@ const StudyGroups: React.FC = () => {
           </Alert>
         </Snackbar>
 
-        <div className="study-groups-header">
-          <div className="header-top">
-            <div className="header-top-row">
-              <div className="title-section">
-                <Button
-                  className="back-button"
-                  onClick={() => navigate('/user')}
-                  startIcon={<ArrowBackIcon />}
-                >
-                  Back to Dashboard
-                </Button>
-                <Typography variant="h4" className="study-groups-title">
-                  Study Groups
-                </Typography>
-                <Typography variant="subtitle1" className="enrolled-count">
-                  Enrolled in {enrolledGroups.length} {enrolledGroups.length === 1 ? 'group' : 'groups'}
-                </Typography>
-              </div>
-              <Button 
-                variant="contained" 
-                className="create-group-button"
-                onClick={() => setOpenCreateDialog(true)}
-                startIcon={<AddIcon />}
-              >
-                Create Group
-              </Button>
+        <div className="header-container">
+            <div className="header-top">
+                <div className="header-left">
+                    <Button
+                        className="back-button"
+                        onClick={() => navigate('/user')}
+                        startIcon={<ArrowBackIcon />}
+                    >
+                        Back to Dashboard
+                    </Button>
+                </div>
+                <div className="header-center">
+                    <Typography variant="h4" className="header-title">
+                        Study Groups
+                    </Typography>
+                    <div className="header-stats">
+                        <Typography variant="subtitle1" className="enrolled-count">
+                            Enrolled in {enrolledGroups.length} {enrolledGroups.length === 1 ? 'group' : 'groups'}
+                        </Typography>
+                    </div>
+                </div>
+                <div className="header-right">
+                    <Button
+                        variant="contained"
+                        className="create-group-button"
+                        onClick={() => setOpenCreateDialog(true)}
+                        startIcon={<AddIcon />}
+                    >
+                        Create Group
+                    </Button>
+                </div>
             </div>
-          </div>
-          <div className="search-container">
-            <TextField
-              fullWidth
-              variant="outlined"
-              placeholder="Search groups by name, subject, or description..."
-              value={searchTerm}
-              onChange={(e) => handleSearch(e.target.value)}
-              className="search-input"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </div>
+            <div className="search-container">
+                <TextField
+                    className="search-bar"
+                    placeholder="Search groups by name, subject, or description..."
+                    variant="outlined"
+                    fullWidth
+                    value={searchTerm}
+                    onChange={(e) => handleSearch(e.target.value)}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <SearchIcon style={{ color: '#1a5a73' }} />
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+            </div>
         </div>
 
         {/* Invitations Section */}

@@ -149,42 +149,42 @@ const UserNotes: React.FC = () => {
 
             {/* Main Content */}
             <div className="dashboard-container">
-                <div className="dashboard-header">
-                    <div className="header-top">
-                        <button 
-                            className="back-button"
-                            onClick={() => navigate('/user')}
-                        >
-                            ← Back to Dashboard
-                        </button>
-                    <h1>Notes & Flashcards</h1>
-                    </div>
+            <div className="dashboard-header">
+                <div className="header-top">
                     <button 
-                        className="action-button"
-                        onClick={() => setIsCreating(true)}
+                        className="back-button"
+                        onClick={() => navigate('/user')}
                     >
-                        Create New Note
+                        ← Back to Dashboard
                     </button>
+                <h1>Notes & Flashcards</h1>
                 </div>
-                <div className="content-section">
-                    {isLoading ? (
-                        <div className="loading-state">
-                            Loading notes...
-                        </div>
-                    ) : notes.length === 0 && !isCreating ? (
-                        <div className="empty-state">
-                            <p>No notes yet. Create your first note to get started!</p>
-                        </div>
-                    ) : (
-                    <div className="notes-grid">
-                        {notes.map(note => (
+                <button 
+                    className="action-button"
+                    onClick={() => setIsCreating(true)}
+                >
+                    Create New Note
+                </button>
+            </div>
+            <div className="content-section">
+                {isLoading ? (
+                    <div className="loading-state">
+                        Loading notes...
+                    </div>
+                ) : notes.length === 0 && !isCreating ? (
+                    <div className="empty-state">
+                        <p>No notes yet. Create your first note to get started!</p>
+                    </div>
+                ) : (
+                <div className="notes-grid">
+                    {notes.map(note => (
                             <NoteCard
                                 key={note._id}
                                 note={note}
                                 onNoteUpdated={handleNoteUpdated}
                                 onNoteDeleted={handleNoteDeleted}
                             />
-                        ))}
+                                ))}
                         {!isCreating && (
                             <button 
                                 className="add-note-button"

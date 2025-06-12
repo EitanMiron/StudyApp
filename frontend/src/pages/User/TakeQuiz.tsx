@@ -53,20 +53,20 @@ const TakeQuiz: React.FC = () => {
     const [currentAttempt, setCurrentAttempt] = useState(1);
 
     useEffect(() => {
-        const fetchQuiz = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    navigate('/login/user');
-                    return;
-                }
+    const fetchQuiz = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                navigate('/login/user');
+                return;
+            }
 
                 const response = await axios.get(
                     `http://localhost:4000/api/quizRoutes/groups/${groupId}/quizzes/${quizId}`,
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
 
-                setQuiz(response.data);
+            setQuiz(response.data);
                 if (response.data.submissions && response.data.submissions.length > 0) {
                     setCurrentAttempt(response.data.submissions.length + 1);
                 }
@@ -78,16 +78,16 @@ const TakeQuiz: React.FC = () => {
                     initialAnswers[question._id] = '';
                 });
                 setAnswers(initialAnswers);
-            } catch (error: any) {
-                console.error('Error fetching quiz:', error);
-                setError(error.response?.data?.message || 'Failed to fetch quiz');
-                if (error.response?.status === 401) {
-                    navigate('/login/user');
-                }
-            } finally {
-                setLoading(false);
+        } catch (error: any) {
+            console.error('Error fetching quiz:', error);
+            setError(error.response?.data?.message || 'Failed to fetch quiz');
+            if (error.response?.status === 401) {
+                navigate('/login/user');
             }
-        };
+        } finally {
+            setLoading(false);
+        }
+    };
 
         fetchQuiz();
     }, [groupId, quizId, navigate]);
@@ -157,8 +157,8 @@ const TakeQuiz: React.FC = () => {
         return (
             <div className="quiz-page">
                 <div className="quiz-page-container">
-                    <div className="loading-container">
-                        <CircularProgress />
+            <div className="loading-container">
+                <CircularProgress />
                     </div>
                 </div>
             </div>
@@ -169,8 +169,8 @@ const TakeQuiz: React.FC = () => {
         return (
             <div className="quiz-page">
                 <div className="quiz-page-container">
-                    <div className="error-container">
-                        <Typography color="error">Quiz not found</Typography>
+            <div className="error-container">
+                <Typography color="error">Quiz not found</Typography>
                     </div>
                 </div>
             </div>
@@ -184,32 +184,32 @@ const TakeQuiz: React.FC = () => {
             <div className="quiz-page-container">
                 <div className="quiz-taking-container">
                     <div className="quiz-header">
-                        <div className="header-top">
-                            <div className="header-top-row">
-                                <Button
-                                    className="back-button"
-                                    onClick={() => navigate('/quizzes')}
-                                    startIcon={<ArrowBackIcon />}
-                                >
-                                    Back to Quizzes
-                                </Button>
+                <div className="header-top">
+                    <div className="header-top-row">
+                            <Button
+                                className="back-button"
+                                onClick={() => navigate('/quizzes')}
+                                startIcon={<ArrowBackIcon />}
+                            >
+                                Back to Quizzes
+                            </Button>
                                 <div className="title-section">
                                     <Typography variant="h4" className="quiz-title">
-                                        {quiz.title}
-                                    </Typography>
-                                </div>
-                                <div className={`timer ${timeLeft <= 300 ? 'warning' : ''}`}>
-                                    Time Left: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
-                                </div>
-                            </div>
+                                {quiz.title}
+                            </Typography>
                         </div>
+                                <div className={`timer ${timeLeft <= 300 ? 'warning' : ''}`}>
+                            Time Left: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
+                                </div>
                     </div>
+                </div>
+            </div>
 
-                    {error && (
-                        <Typography color="error" className="error-message">
-                            {error}
-                        </Typography>
-                    )}
+            {error && (
+                <Typography color="error" className="error-message">
+                    {error}
+                </Typography>
+            )}
 
                     <div className="quiz-progress">
                         <Typography variant="body2" color="textSecondary">
@@ -221,52 +221,52 @@ const TakeQuiz: React.FC = () => {
                     </div>
 
                     <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
-                        <Paper className="quiz-form-section">
+                <Paper className="quiz-form-section">
                             <Typography variant="body1" className="quiz-description">
-                                {quiz.description}
-                            </Typography>
+                        {quiz.description}
+                    </Typography>
                             <Typography variant="body2" color="textSecondary">
                                 {quiz.questions.length} questions
                                 {quiz.timeLimit && ` • ${quiz.timeLimit} minutes time limit`}
                                 {` • Attempt ${currentAttempt} of ${quiz.maxAttempts}`}
                             </Typography>
-                        </Paper>
+                </Paper>
 
-                        {quiz.questions.map((question, index) => (
+                {quiz.questions.map((question, index) => (
                             <Paper key={question._id} className="question-container">
                                 <Typography variant="h6" className="question-text">
                                     Question {index + 1}: {question.questionText}
-                                </Typography>
+                        </Typography>
                                 <FormControl component="fieldset" className="options-container">
-                                    <RadioGroup
-                                        value={answers[question._id] || ''}
-                                        onChange={(e) => handleAnswerChange(question._id, e.target.value)}
-                                    >
-                                        {question.options.map((option) => (
-                                            <FormControlLabel
-                                                key={option._id}
-                                                value={option._id}
-                                                control={<Radio />}
-                                                label={option.optionText}
+                            <RadioGroup
+                                value={answers[question._id] || ''}
+                                onChange={(e) => handleAnswerChange(question._id, e.target.value)}
+                            >
+                                {question.options.map((option) => (
+                                    <FormControlLabel
+                                        key={option._id}
+                                        value={option._id}
+                                        control={<Radio />}
+                                        label={option.optionText}
                                                 className="option-label"
-                                            />
-                                        ))}
-                                    </RadioGroup>
-                                </FormControl>
-                            </Paper>
-                        ))}
+                                    />
+                                ))}
+                            </RadioGroup>
+                        </FormControl>
+                    </Paper>
+                ))}
 
                         <div className="quiz-actions">
-                            <Button
-                                variant="contained"
-                                color="primary"
+                    <Button
+                        variant="contained"
+                        color="primary"
                                 type="submit"
                                 disabled={Object.keys(answers).length === 0}
-                            >
-                                Submit Quiz
-                            </Button>
+                    >
+                        Submit Quiz
+                    </Button>
                         </div>
-                    </form>
+            </form>
                 </div>
             </div>
         </div>
