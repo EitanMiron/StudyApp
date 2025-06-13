@@ -19,6 +19,8 @@ const StudyGroups: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
   const [activeFolder, setActiveFolder] = useState('current'); // 'current' or 'exited'
+  const [currentPage, setCurrentPage] = useState(1); // Added for pagination
+  const [cardsPerPage] = useState(6); // Added for pagination: 6 cards per page
   const [newGroup, setNewGroup] = useState({
     name: '',
     subject: '',
@@ -330,10 +332,18 @@ const StudyGroups: React.FC = () => {
       return 0;
     });
 
-  // Filter groups based on active folder
-  const displayGroups = activeFolder === 'current' 
-    ? filteredGroups
-    : exitedGroups;
+  // Get current cards for pagination
+  const indexOfLastCard = currentPage * cardsPerPage;
+  const indexOfFirstCard = indexOfLastCard - cardsPerPage;
+
+  // Filter groups based on active folder AND pagination
+  const paginatedDisplayGroups = activeFolder === 'current' 
+    ? filteredGroups.slice(indexOfFirstCard, indexOfLastCard)
+    : exitedGroups.slice(indexOfFirstCard, indexOfLastCard);
+
+  const totalPages = Math.ceil((activeFolder === 'current' ? filteredGroups.length : exitedGroups.length) / cardsPerPage);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   if (loading) {
     return <Typography className="loading-text">Loading...</Typography>;
@@ -353,11 +363,6 @@ const StudyGroups: React.FC = () => {
         </div>
         <div className="header-center">
           <Typography variant="h4" className="header-title">Study Groups</Typography>
-          <div className="header-stats">
-              <Typography variant="subtitle1" className="enrolled-count">
-                  Enrolled in {enrolledGroups.length} {enrolledGroups.length === 1 ? 'group' : 'groups'}
-              </Typography>
-          </div>
           <Box className="search-container">
             <TextField
               className="search-bar"
@@ -391,21 +396,32 @@ const StudyGroups: React.FC = () => {
         <div className="sidebar">
           <div 
             className={`sidebar-folder ${activeFolder === 'current' ? 'active' : ''}`}
-            onClick={() => setActiveFolder('current')}
+            onClick={() => {
+              setActiveFolder('current');
+              setCurrentPage(1); // Reset to first page on folder change
+            }}
           >
             Current Groups ({groups.length})
           </div>
           <div 
             className={`sidebar-folder ${activeFolder === 'exited' ? 'active' : ''}`}
-            onClick={() => setActiveFolder('exited')}
+            onClick={() => {
+              setActiveFolder('exited');
+              setCurrentPage(1); // Reset to first page on folder change
+            }}
           >
             Exited Groups ({exitedGroups.length})
           </div>
+          <Box className="sidebar-enrolled-count">
+              <Typography variant="subtitle1" className="enrolled-count">
+                  Enrolled in {enrolledGroups.length} {enrolledGroups.length === 1 ? 'group' : 'groups'}
+              </Typography>
+          </Box>
         </div>
 
         <div className="main-content">
           <Container className="study-groups-container">
-            {invitations.length > 0 && activeFolder === 'current' && (
+            {invitations.length > 0 && activeFolder === 'current' && ( // Only show invitations in current groups
               <Box className="invitations-box">
                 <Typography variant="h6" className="invitation-title">
                   You have {invitations.length} group invitation{invitations.length > 1 ? 's' : ''}
@@ -438,7 +454,7 @@ const StudyGroups: React.FC = () => {
 
             {activeFolder === 'current' ? (
               <div className="groups-list">
-                {displayGroups.map((group) => (
+                {paginatedDisplayGroups.map((group) => (
                   <div key={group._id} className="group-card">
                     <StudyGroupCard
                       group={group}
@@ -452,12 +468,12 @@ const StudyGroups: React.FC = () => {
               </div>
             ) : (
               <div className="exited-groups-list">
-                {displayGroups.map((group) => (
+                {paginatedDisplayGroups.map((group) => (
                   <div key={group._id} className="group-card mini-card">
                     <StudyGroupCard
                       group={group}
                       onJoin={handleRejoinGroup}
-                      onLeave={() => {}}
+                      onLeave={() => {}} // No leave functionality for exited groups
                       onDelete={handleDeleteGroup}
                       isEnrolled={false}
                       isExited={true}
@@ -465,6 +481,18 @@ const StudyGroups: React.FC = () => {
                   </div>
                 ))}
               </div>
+            )}
+
+            {totalPages > 1 && (
+              <Box className="pagination-dots">
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <span
+                    key={i}
+                    className={`dot ${currentPage === i + 1 ? 'active' : ''}`}
+                    onClick={() => paginate(i + 1)}
+                  ></span>
+                ))}
+              </Box>
             )}
 
             <Dialog 
@@ -506,7 +534,7 @@ const StudyGroups: React.FC = () => {
                   options={users}
                   getOptionLabel={(option) => option.name}
                   value={selectedUsers}
-                  onChange={(_, newValue) => setSelectedUsers(newValue)}
+                  onChange={(_, newValue) => setNewGroup({ ...newGroup, invitedUsers: newValue.map(user => user.id) })} // Update invitedUsers
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -527,7 +555,7 @@ const StudyGroups: React.FC = () => {
                     })
                   }
                   isOptionEqualToValue={(option, value) => option.id === value.id}
-                  getOptionKey={(option) => option.id}
+                  getOptionKey={(option) => option.id} // Added getOptionKey
                 />
               </DialogContent>
               <DialogActions>
