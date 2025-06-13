@@ -88,7 +88,7 @@ const joinGroup = async (req, res) => {
 
 // Leave a study group
 const leaveGroup = async (req, res) => {
-    const { userId } = req.body;
+    const userId = req.body.userId;
     const groupId = req.params.id;
 
     try {
@@ -97,17 +97,24 @@ const leaveGroup = async (req, res) => {
             return res.status(404).json({ error: 'Group not found' });
         }
 
-        // Remove userId from members
-        const index = group.members.indexOf(userId);
-        if (index === -1) {
+        // Find the member index
+        const memberIndex = group.members.findIndex(member => 
+            member.userId && member.userId.toString() === userId
+        );
+
+        if (memberIndex === -1) {
             return res.status(400).json({ error: 'User is not a member of the group' });
         }
 
-        group.members.splice(index, 1);
+        // Remove the member
+        group.members.splice(memberIndex, 1);
         await group.save();
 
-        res.status(200).json({ message: 'Left group successfully', group });
+        // Return the updated group
+        const updatedGroup = await Group.findById(groupId);
+        res.status(200).json({ message: 'Left group successfully', group: updatedGroup });
     } catch (error) {
+        console.error('Error leaving group:', error);
         res.status(500).json({ error: error.message });
     }
 };

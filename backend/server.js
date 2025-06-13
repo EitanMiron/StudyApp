@@ -14,6 +14,7 @@ const sessionRoutes = require('./routes/sessionRoutes')
 const userRoutes = require('./routes/userRoutes')
 const adminRoutes = require('./routes/adminRoutes')
 const invitationRoutes = require('./routes/invitationRoutes')
+const aiRoutes = require('./routes/aiRoutes')
 
 //express app
 const app = express()
@@ -39,6 +40,7 @@ app.use('/api/sessionRoutes', sessionRoutes)
 app.use('/api/invitations', invitationRoutes)
 app.use('/api/adminRoutes', adminRoutes)
 app.use('/api/userRoutes', userRoutes)
+app.use('/api/ai', aiRoutes)
 
 //connect to Database
 mongoose.connect(process.env.MONGO_URI)

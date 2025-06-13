@@ -19,9 +19,13 @@ import UserResources from "./pages/User/UserResources";
 import CreateQuiz from "./pages/User/CreateQuiz";
 import TakeQuiz from "./pages/User/TakeQuiz";
 import QuizResults from "./pages/User/QuizResults";
+import { AuthProvider } from './contexts/AuthContext';
+import { DashboardProvider } from './contexts/DashboardContext';
 
 const App: React.FC = () => {
   return (
+    <AuthProvider>
+      <DashboardProvider>
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
@@ -135,6 +139,8 @@ const App: React.FC = () => {
         />
       </Routes>
     </Router>
+      </DashboardProvider>
+    </AuthProvider>
   );
 };
 

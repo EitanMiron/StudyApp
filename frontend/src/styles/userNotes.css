@@ -5,12 +5,14 @@
     box-sizing: border-box;
 }
 
-body, html {
+html,
+body {
     width: 100%;
+    height: 100%;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
-    background: none !important;
+    background: none !important; /* Ensure no default background */
 }
 
 /* Main container styles */
@@ -22,6 +24,7 @@ body, html {
     margin: 0;
     padding: 0;
     display: flex;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2A7B9B 100%);
 }
 
 .user-notes-page::before {
@@ -35,123 +38,15 @@ body, html {
     z-index: -1;
 }
 
-/* Sidebar styles */
-.user-notes-page .sidebar {
-    width: 280px;
-    min-height: 100vh;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-.user-notes-page .sidebar.right {
-    border-right: none;
-    border-left: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.sidebar-section {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 1rem;
-    padding: 1.25rem;
-}
-
-.sidebar-section h3 {
-    color: #ffffff;
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-    font-weight: 500;
-}
-
-/* Folder management styles */
-.folder-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.folder-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem;
-    color: #ffffff;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.folder-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.folder-item.active {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-/* Action buttons */
-.sidebar-action {
-    all: unset;
-    width: 100%;
-    padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: background-color 0.2s;
-}
-
-.sidebar-action:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-/* AI Question Generator styles */
-.ai-questions {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.ai-question {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 1rem;
-    border-radius: 0.5rem;
-    color: #ffffff;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.ai-question:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.ai-answer {
-    margin-top: 0.5rem;
-    padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 0.5rem;
-    font-size: 0.9rem;
-}
-
 /* Main content container */
 .user-notes-page .dashboard-container {
-    flex: 1;
-    padding: 2.5rem;
-    width: 100%;
-    min-height: 100vh;
-    position: relative;
-    z-index: 1;
-    margin: 0;
-    max-width: none;
     display: flex;
     flex-direction: column;
+    flex: 1;
+    padding: 2rem;
+    margin: 0 auto;
+    max-width: 1400px;
+    width: 100%;
 }
 
 /* Header section styles */
@@ -161,194 +56,184 @@ body, html {
     gap: 1rem;
     margin-bottom: 2rem;
     padding: 1.5rem;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.1);
+    background: white;
     border-radius: 1rem;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    width: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .user-notes-page .header-top {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    width: 100%;
+    align-items: center;
     position: relative;
+    width: 100%;
 }
 
-.user-notes-page .dashboard-header h1 {
-    font-size: 2rem;
-    color: #ffffff;
-    font-weight: 600;
+.user-notes-page .header-top h1 {
+    color: #2A7B9B;
     margin: 0;
-    text-align: center;
-    flex: 1;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    width: auto;
     white-space: nowrap;
 }
 
 /* Back button styles */
 .user-notes-page .back-button {
-    all: unset;
-    width: auto;
-    min-width: 120px;
-    height: 40px;
-    font-size: 16px;
-    background: transparent;
+    background: none;
     border: none;
-    position: relative;
-    color: #ffffff;
+    color: #2A7B9B;
     cursor: pointer;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    transition: color 0.3s ease;
     z-index: 1;
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
 }
 
-.user-notes-page .back-button::after,
-.user-notes-page .back-button::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    z-index: -99999;
-    transition: all .4s;
+.user-notes-page .back-button:hover {
+    color: #1a1a1a;
 }
 
-.user-notes-page .back-button::before {
-    transform: translate(0%, 0%);
-    width: 100%;
-    height: 100%;
-    background: #3a3a42;
-    border-radius: 10px;
-}
-
-.user-notes-page .back-button::after {
-    transform: translate(10px, 10px);
-    width: 35px;
-    height: 35px;
-    background: #ffffff15;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    border-radius: 50px;
-}
-
-.user-notes-page .back-button:hover::before {
-    transform: translate(5%, 20%);
-    width: 110%;
-    height: 110%;
-}
-
-.user-notes-page .back-button:hover::after {
-    border-radius: 10px;
-    transform: translate(0, 0);
-    width: 100%;
-    height: 100%;
-}
-
-.user-notes-page .back-button:active::after {
-    transition: 0s;
-    transform: translate(0, 5%);
-}
-
-/* Specific button styles */
-.user-notes-page .back-button {
-    color: #ffffff !important;
-    margin-right: 1rem;
-}
-
-.user-notes-page .back-button .MuiButton-label {
-    color: #ffffff !important;
-}
-
-.user-notes-page .back-button.MuiButton-root {
-    color: #ffffff !important;
-}
-
-.user-notes-page .back-button.MuiButton-root .MuiButton-label {
-    color: #ffffff !important;
-}
-
-.user-notes-page .back-button.MuiButton-root .MuiButton-startIcon {
-    color: #ffffff !important;
-}
-
-/* Action button styles */
 .user-notes-page .action-button {
-    all: unset;
-    width: auto;
-    min-width: 120px;
-    height: 40px;
-    font-size: 16px;
-    background: transparent;
+    background: #2A7B9B;
+    color: white;
     border: none;
-    position: relative;
-    color: #f0f0f0;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
     cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     z-index: 1;
-    padding: 10px 20px;
+}
+
+.user-notes-page .action-button:hover {
+    background: #1a1a1a;
+    transform: translateY(-2px);
+}
+
+.user-notes-page .action-button.add-note-inline {
+    width: 50px;
+    min-width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-top: 1rem;
+}
+
+.user-notes-page .action-button.add-note-grid {
+    width: 100%;
+    height: 150px;
+    font-size: 3rem;
+    border-radius: 1rem;
+    border: 2px dashed rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.7);
     display: flex;
     align-items: center;
     justify-content: center;
-    white-space: nowrap;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
+    transition: all 0.3s ease;
 }
 
-.user-notes-page .action-button::after,
-.user-notes-page .action-button::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    z-index: -99999;
-    transition: all .4s;
+.user-notes-page .action-button.add-note-grid:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.8);
+    transform: translateY(-3px);
 }
 
-.user-notes-page .action-button::before {
-    transform: translate(0%, 0%);
-    width: 100%;
-    height: 100%;
-    background: #4f46e5;
-    border-radius: 10px;
+.user-notes-page .content-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
-.user-notes-page .action-button::after {
-    transform: translate(10px, 10px);
-    width: 35px;
-    height: 35px;
-    background: #ffffff15;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    border-radius: 50px;
+.user-notes-page .notes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    flex: 1;
 }
 
-.user-notes-page .action-button:hover::before {
-    transform: translate(5%, 20%);
-    width: 110%;
-    height: 110%;
+.user-notes-page .notes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
 }
 
-.user-notes-page .action-button:hover::after {
-    border-radius: 10px;
-    transform: translate(0, 0);
-    width: 100%;
-    height: 100%;
+.user-notes-page .notes-title {
+    color: #ffffff;
+    font-size: 1.8rem;
+    font-weight: 600;
 }
 
-.user-notes-page .action-button:active::after {
-    transition: 0s;
-    transform: translate(0, 5%);
+.user-notes-page .notes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    flex: 1;
+    padding-bottom: 2rem;
+}
+
+.user-notes-page .note-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease;
+}
+
+.user-notes-page .note-card:hover {
+    transform: translateY(-5px);
+}
+
+.user-notes-page .note-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+}
+
+.user-notes-page .note-card-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.user-notes-page .note-card .note-content {
+    padding: 0 1rem 1rem;
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-notes-page .note-card .note-content p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+}
+
+.user-notes-page .note-card .note-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    margin-top: auto;
+    border-top: 1px solid #eee;
+}
+
+.user-notes-page .note-card .note-actions button {
+    all: unset; /* Reset all button styles */
+    cursor: pointer;
+}
+
+.user-notes-page .note-separator {
+    border: none;
+    border-top: 1px dashed rgba(255, 255, 255, 0.4);
+    margin: 0.5rem 0;
 }
 
 /* Edit and Delete button styles */
@@ -451,185 +336,60 @@ body, html {
     color: #dc2626;
 }
 
-/* Content section styles */
-.user-notes-page .content-section {
-    width: 100%;
-    background: transparent;
-    margin: 0;
-    padding: 0;
-    flex: 1;
+/* Floating AI Assistant Button and Speech Bubble */
+.user-notes-page .ai-assistant-fab-container {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+}
+
+.user-notes-page .ai-assistant-fab {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #2A7B9B;
+    border: none;
+    color: white;
+    cursor: pointer;
     display: flex;
-    flex-direction: column;
-}
-
-/* Notes grid layout */
-.user-notes-page .notes-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
-    gap: 2rem;
-    padding: 2rem;
-    width: 100%;
-    max-width: 1600px;
-    margin: 0 auto;
-}
-
-/* Note card styles */
-.user-notes-page .note-card {
-    background-color: white; 
-    border-radius: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border: 1px solid #e5e7eb;
-    height: 90%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    padding: 1.5rem;
-    position: relative;
-}
-
-.user-notes-page .note-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Note card header */
-.user-notes-page .note-card-header {
-    padding: 1.25rem;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.user-notes-page .note-card-header h3 {
-    margin: 0;
-    font-size: 1.25rem;
-    color: #1f2937;
-    font-weight: 600;
-}
-
-/* Note card content */
-.user-notes-page .note-card .note-content {
-    flex: 1;
-    overflow-y: auto;
-    margin-bottom: 1rem;
-}
-
-.user-notes-page .note-card .note-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin-top: auto;
-    padding-top: 1rem;
-    width: 100%;
-}
-
-.user-notes-page .note-card .note-actions button {
-    width: 100%;
-    padding: 0.75rem 1.5rem;
-}
-
-.user-notes-page .note-card-content p {
-    display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    font-size: 0.875rem;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-    min-width: 80px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 }
 
-.user-notes-page .note-card-content p {
-    margin: 0;
-    color: #4b5563;
-    line-height: 1.5;
+.user-notes-page .ai-assistant-fab:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Form styles */
-.user-notes-page .note-form {
+.user-notes-page .ai-assistant-speech-bubble {
+    position: fixed;
+    bottom: 90px; /* Position above the FAB */
+    right: 20px;
+    width: 300px;
+    height: 400px;
+    background-image: url('/assets/speech-bubble.png'); /* Your speech bubble image */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 999;
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    flex-direction: column; /* Changed to column to better stack content */
+    align-items: center; /* Center horizontally */
+    justify-content: center; /* Center vertically */
+    padding: 30px 15px 50px 15px; /* Adjust padding to fit content inside bubble */
+    box-sizing: border-box;
+}
+
+.user-notes-page .ai-assistant-speech-bubble > div {
     width: 100%;
     height: 100%;
-    background-color: white;
-    border-radius: 1.5rem;
-    padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    border: 1px solid #e5e7eb;
+    overflow: auto;
+    padding: 10px; /* Example: add some internal padding */
 }
 
-.user-notes-page .note-form textarea {
-    flex: 1;
-    padding: 1rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.5rem;
-    resize: none;
-    font-size: 1rem;
-    line-height: 1.5;
-    background-color: white;
-    margin-bottom: 1rem;
-}
-
-.user-notes-page .note-form .form-actions {
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-    justify-content: flex-end;
-    margin-top: auto;
-    width: 100%;
-}
-
-.user-notes-page .note-form .form-actions button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    font-size: 0.875rem;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-    min-width: 80px;
-}
-
-/* Flashcard section styles */
-.user-notes-page .flashcards-section {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #e5e7eb;
-}
-
-.user-notes-page .flashcards-section h4 {
-    font-size: 1.125rem;
-    color: #1f2937;
-    margin-bottom: 1rem;
-}
-
-.user-notes-page .flashcard-item {
-    background-color: #f9fafb; 
-    padding: 1.0rem;
-    border-radius: 0.5rem;
-    margin-bottom: 0.75rem;
-}
-
-.user-notes-page .flashcard-item p {
-    margin: 0.25rem 0;
-}
-
-.user-notes-page .flashcard-question {
-    font-weight: 500;
-    color: #1f2937;
-}
-
-.user-notes-page .flashcard-answer {
-    color: #4b5563;
-}
-
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .user-notes-page .dashboard-container {
         padding: 1rem;
@@ -644,6 +404,15 @@ body, html {
     .user-notes-page .notes-grid {
         grid-template-columns: 1fr;
     }
+
+    .user-notes-page .ai-assistant-speech-bubble {
+        width: 80vw;
+        height: 50vh;
+        bottom: 80px;
+        right: 10px;
+        left: 10px;
+        margin: 0 auto;
+    }
 }
 
 @media (min-width: 640px) {
@@ -653,12 +422,16 @@ body, html {
 }
 
 @media (min-width: 1024px) {
+    .user-notes-page {
+        grid-template-columns: 280px 1fr 280px; /* Three-column layout */
+    }
+
     .user-notes-page .notes-grid {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
-@media (min-width: 1000px) {
+@media (min-width: 1200px) {
     .user-notes-page .notes-grid {
         grid-template-columns: repeat(4, 1fr);
     }
@@ -682,14 +455,12 @@ body, html {
 .user-notes-page .add-note-button {
     all: unset;
     width: 100%;
-    height: 90%;
-    min-height: 200px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 2px dashed rgba(255, 255, 255, 0.3);
-    border-radius: 1.5rem;
-    color: #ffffff;
-    font-size: 3rem;
-    font-weight: 300;
+    height: 200px;
+    background-color: white;
+    border: 2px dashed #ccc;
+    border-radius: 1rem;
+    color: #666;
+    font-size: 2rem;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -698,11 +469,102 @@ body, html {
 }
 
 .user-notes-page .add-note-button:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    border-color: #2A7B9B;
+    color: #2A7B9B;
     transform: translateY(-2px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .user-notes-page .add-note-button:active {
     transform: translateY(0);
+}
+
+/* Sidebar styles */
+.user-notes-page .sidebar {
+    width: 250px;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    margin: 1rem;
+}
+
+.user-notes-page .sidebar-section {
+    margin-bottom: 2rem;
+}
+
+.user-notes-page .sidebar-section h3 {
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.user-notes-page .folder-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.user-notes-page .folder-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    color: white;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.user-notes-page .folder-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.user-notes-page .folder-item.active {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.user-notes-page .sidebar-action {
+    width: 100%;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 0.5rem;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.user-notes-page .sidebar-action:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* AI Question Generator styles */
+.user-notes-page .ai-questions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.user-notes-page .ai-question {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.user-notes-page .ai-question:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.user-notes-page .ai-answer {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0.25rem;
 }

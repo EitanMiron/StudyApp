@@ -3,12 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import NoteCard from '../../components/NoteCard';
 import { useDashboardData } from '../../hooks/useDashboardData';
-import "../../styles/userNotes.css";
+import '../../styles/userNotes.css';
 import FolderIcon from '@mui/icons-material/Folder';
 import ShareIcon from '@mui/icons-material/Share';
 import DownloadIcon from '@mui/icons-material/Download';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import AddIcon from '@mui/icons-material/Add';
+import { Dialog, CircularProgress, Typography, Box, Button, TextField, DialogTitle, DialogContent, DialogActions, IconButton } from '@mui/material';
+import AIAssistant from '../../components/AIAssistant';
+import NoteDialog from '../../components/NoteDialog';
+import CloseIcon from '@mui/icons-material/Close';
 
 interface Flashcard {
   question: string;
@@ -30,6 +34,7 @@ interface Note {
   collaborators: Collaborator[];
   createdBy: string;
   createdAt: Date;
+  folderId?: string;
 }
 
 const UserNotes: React.FC = () => {
@@ -46,48 +51,106 @@ const UserNotes: React.FC = () => {
         { question: "What are the key points to remember?", answer: "" }
     ]);
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+    const [showAIAssistant, setShowAIAssistant] = useState(false); 
+    const [currentAiQuestion, setCurrentAiQuestion] = useState<string | null>(null); 
 
     useEffect(() => {
         fetchNotes();
     }, []);
 
-        const fetchNotes = async () => {
-            try {
+    const fetchNotes = async () => {
+        try {
             setIsLoading(true);
-                const token = localStorage.getItem('token');
+            const token = localStorage.getItem('token');
             const response = await axios.get('http://localhost:4000/api/noteRoutes/user/notes', {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                setNotes(response.data);
-            } catch (error) {
-                console.error('Error fetching notes:', error);
-                if (axios.isAxiosError(error) && error.response?.status === 401) {
-                    localStorage.removeItem('token');
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            console.log("Fetched notes data:", response.data);
+            setNotes(response.data);
+        } catch (error) {
+            console.error('Error fetching notes:', error);
+            if (axios.isAxiosError(error) && error.response?.status === 401) {
+                localStorage.removeItem('token');
                 navigate('/login');
-                }
+            }
         } finally {
             setIsLoading(false);
-            }
-        };
-
-    const handleNoteCreated = async (newNote: Note) => {
-        setNotes(prevNotes => [...prevNotes, newNote]);
-        setIsCreating(false);
-        await fetchDashboardData(); // Refresh dashboard data
+        }
     };
 
-    const handleNoteUpdated = async (updatedNote: Note) => {
-        setNotes(prevNotes => 
-            prevNotes.map(note => 
-                note._id === updatedNote._id ? updatedNote : note
-            )
-        );
-        await fetchDashboardData(); // Refresh dashboard data
+    const handleNoteCreated = async (newNoteData: { title: string; content: string; folderId: string; }) => {
+        console.log("Attempting to create note on backend:", newNoteData);
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.post('http://localhost:4000/api/noteRoutes/user/notes', {
+                term: newNoteData.title,
+                definition: newNoteData.content,
+                folderId: newNoteData.folderId,
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const createdNote: Note = { 
+                _id: response.data._id,
+                term: response.data.term,
+                definition: response.data.definition,
+                flashcards: response.data.flashcards || [],
+                collaborators: response.data.collaborators || [],
+                createdBy: response.data.createdBy,
+                createdAt: response.data.createdAt,
+                folderId: response.data.folderId || '', 
+            };
+            setNotes(prevNotes => [...prevNotes, createdNote]);
+            setIsCreating(false);
+            await fetchDashboardData(); 
+        } catch (error) {
+            console.error('Error creating note:', error);
+        }
+    };
+
+    const handleNoteUpdated = async (updatedNoteData: { title: string; content: string; folderId: string; }) => {
+        console.log("Attempting to update note on backend:", updatedNoteData);
+        if (!selectedNote) return; 
+        try {
+            const token = localStorage.getItem('token');
+            await axios.put(`http://localhost:4000/api/noteRoutes/user/notes/${selectedNote._id}`, {
+                term: updatedNoteData.title,
+                definition: updatedNoteData.content,
+                folderId: updatedNoteData.folderId,
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setNotes(prevNotes => 
+                prevNotes.map(note => 
+                    note._id === selectedNote._id 
+                        ? { 
+                              ...note, 
+                              term: updatedNoteData.title, 
+                              definition: updatedNoteData.content,
+                              folderId: updatedNoteData.folderId
+                          }
+                        : note
+                )
+            );
+            setIsCreating(false); 
+            setSelectedNote(null); 
+            await fetchDashboardData(); 
+        } catch (error) {
+            console.error('Error updating note:', error);
+        }
     };
 
     const handleNoteDeleted = async (noteId: string) => {
-        setNotes(prevNotes => prevNotes.filter(note => note._id !== noteId));
-        await fetchDashboardData(); // Refresh dashboard data
+        console.log("Attempting to delete note with ID:", noteId);
+        try {
+            const token = localStorage.getItem('token');
+            await axios.delete(`http://localhost:4000/api/noteRoutes/user/notes/${noteId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setNotes(prevNotes => prevNotes.filter(note => note._id !== noteId));
+            await fetchDashboardData(); 
+        } catch (error) {
+            console.error('Error deleting note:', error);
+        }
     };
 
     const handleFolderSelect = (folder: string) => {
@@ -106,20 +169,16 @@ const UserNotes: React.FC = () => {
     };
 
     const handleShareNote = (note: Note) => {
-        // Implement sharing functionality
         console.log('Sharing note:', note);
     };
 
     const handleAiQuestionClick = (question: string) => {
-        setSelectedNote(notes.find(note => note.term === question) || null);
-        // Here you would typically make an API call to get the AI-generated answer
-        // For now, we'll just set a placeholder answer
-        const updatedQuestions = aiQuestions.map(q => 
-            q.question === question 
-                ? { ...q, answer: "This is a placeholder answer. The actual AI integration will be implemented later." }
-                : q
-        );
-        setAiQuestions(updatedQuestions);
+        setShowAIAssistant(true);
+        setCurrentAiQuestion(question);
+    };
+
+    const toggleAIAssistant = () => {
+        setShowAIAssistant(prev => !prev);
     };
 
     return (
@@ -149,56 +208,78 @@ const UserNotes: React.FC = () => {
 
             {/* Main Content */}
             <div className="dashboard-container">
-            <div className="dashboard-header">
-                <div className="header-top">
+                <div className="dashboard-header">
+                    <div className="header-top">
+                        <button 
+                            className="back-button"
+                            onClick={() => navigate('/user')}
+                        >
+                            ← Back to Dashboard
+                        </button>
+                        <h1>Notes & Flashcards</h1>
+                    </div>
                     <button 
-                        className="back-button"
-                        onClick={() => navigate('/user')}
+                        className="action-button"
+                        onClick={() => setIsCreating(true)}
                     >
-                        ← Back to Dashboard
+                        Create New Note
                     </button>
-                <h1>Notes & Flashcards</h1>
                 </div>
-                <button 
-                    className="action-button"
-                    onClick={() => setIsCreating(true)}
-                >
-                    Create New Note
-                </button>
-            </div>
-            <div className="content-section">
-                {isLoading ? (
-                    <div className="loading-state">
-                        Loading notes...
-                    </div>
-                ) : notes.length === 0 && !isCreating ? (
-                    <div className="empty-state">
-                        <p>No notes yet. Create your first note to get started!</p>
-                    </div>
-                ) : (
-                <div className="notes-grid">
-                    {notes.map(note => (
-                            <NoteCard
-                                key={note._id}
-                                note={note}
-                                onNoteUpdated={handleNoteUpdated}
-                                onNoteDeleted={handleNoteDeleted}
-                            />
-                                ))}
-                        {!isCreating && (
-                            <button 
-                                className="add-note-button"
+                <div className="content-section">
+                    {isLoading ? (
+                        <div className="loading-state">
+                            <CircularProgress />
+                        </div>
+                    ) : notes.length === 0 && !isCreating ? (
+                        <div className="empty-state">
+                            <p>No notes yet. Create your first note to get started!</p>
+                            <button
+                                className="action-button add-note-inline"
                                 onClick={() => setIsCreating(true)}
                             >
-                                +
+                                <AddIcon />
                             </button>
-                        )}
-                        {isCreating && (
-                            <NoteCard
-                                onNoteCreated={handleNoteCreated}
-                            />
-                        )}
-                    </div>
+                        </div>
+                    ) : (
+                        <div className="notes-grid">
+                            {notes.map(note => (
+                                <NoteCard
+                                    key={note._id}
+                                    note={note}
+                                    onEdit={() => {
+                                        setSelectedNote(note);
+                                        setIsCreating(false); 
+                                    }}
+                                    onDelete={() => handleNoteDeleted(note._id)}
+                                />
+                            ))}
+                            {!isCreating && (
+                                <button 
+                                    className="add-note-button"
+                                    onClick={() => setIsCreating(true)}
+                                >
+                                    +
+                                </button>
+                            )}
+                            {isCreating && (
+                                <NoteDialog
+                                    open={true}
+                                    onClose={() => setIsCreating(false)}
+                                    onSave={handleNoteCreated}
+                                    title="Create New Note"
+                                    note={null} 
+                                />
+                            )}
+                            {selectedNote && !isCreating && (
+                                <NoteDialog
+                                    open={true}
+                                    onClose={() => setSelectedNote(null)}
+                                    onSave={handleNoteUpdated}
+                                    title="Edit Note"
+                                    note={selectedNote}
+                                />
+                            )}
+                        </div>
                     )}
                 </div>
             </div>
@@ -246,8 +327,51 @@ const UserNotes: React.FC = () => {
                     </div>
                 </div>
             </div>
+            {/* Floating AI Assistant Button */}
+            <div className="ai-assistant-fab-container">
+                <button className="ai-assistant-fab" onClick={toggleAIAssistant}>
+                    {showAIAssistant ? <CloseIcon /> : <SmartToyIcon />}
+                </button>
+            </div>
+
+            {/* AI Assistant Speech Bubble (now using Dialog) */}
+            {showAIAssistant && (
+                <Dialog open={showAIAssistant} onClose={toggleAIAssistant} maxWidth="sm" fullWidth PaperProps={{
+                    sx: {
+                        position: 'fixed',
+                        bottom: 90,
+                        right: 20,
+                        margin: 0,
+                        width: 300,
+                        height: 400,
+                        backgroundImage: "url('/assets/speech-bubble.png')",
+                        backgroundSize: 'contain',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'center',
+                        backgroundColor: 'transparent', 
+                        boxShadow: 'none', 
+                        overflow: 'hidden', 
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '30px 15px 50px 15px', 
+                        boxSizing: 'border-box',
+                        '@media (max-width: 768px)': {
+                            width: '80vw',
+                            height: '50vh',
+                            bottom: 80,
+                            right: 10,
+                            left: 10,
+                            margin: '0 auto',
+                        },
+                    }
+                }}>
+                    <AIAssistant initialQuestion={currentAiQuestion || undefined} />
+                </Dialog>
+            )}
         </div>
     );
 };
 
-export default UserNotes; 
+export default UserNotes;

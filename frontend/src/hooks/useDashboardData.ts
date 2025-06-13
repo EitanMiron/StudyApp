@@ -45,6 +45,10 @@ export const useDashboardData = () => {
     const fetchDashboardData = async () => {
         try {
             const token = localStorage.getItem('token');
+            if (!token) {
+                navigate('/login/user');
+                return;
+            }
             const response = await axios.get('http://localhost:4000/api/userRoutes/dashboard', {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -54,8 +58,10 @@ export const useDashboardData = () => {
             stateUpdaters.forEach(updater => updater(response.data));
         } catch (error: any) {
             console.error('Error fetching dashboard data:', error);
-            if (error.response?.status === 401) {
+            if (error.response?.status === 401 || error.response?.status === 403) {
                 localStorage.removeItem('token');
+                localStorage.removeItem('userId');
+                localStorage.removeItem('email');
                 navigate('/login/user');
             }
         }

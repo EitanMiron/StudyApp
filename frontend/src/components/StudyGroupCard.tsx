@@ -10,6 +10,7 @@ interface StudyGroupCardProps {
   onLeave: (groupId: string) => void;
   onDelete?: (groupId: string) => void;
   isEnrolled: boolean;
+  isExited?: boolean;
 }
 
 const StudyGroupCard: React.FC<StudyGroupCardProps> = ({ 
@@ -17,7 +18,8 @@ const StudyGroupCard: React.FC<StudyGroupCardProps> = ({
   onJoin, 
   onLeave, 
   onDelete,
-  isEnrolled 
+  isEnrolled,
+  isExited = false
 }) => {
   const userId = localStorage.getItem('userId');
   const isAdmin = group.members.some(member => 
@@ -25,7 +27,7 @@ const StudyGroupCard: React.FC<StudyGroupCardProps> = ({
   );
 
   return (
-    <Card className="study-group-card">
+    <Card className={`study-group-card ${isExited ? 'mini-card' : ''}`}>
       <CardContent>
         <Typography variant="h6" component="div">
           {group.name}
@@ -38,32 +40,47 @@ const StudyGroupCard: React.FC<StudyGroupCardProps> = ({
         </Typography>
         <Box className="group-actions">
           {isEnrolled ? (
-            <Button 
-              variant="outlined" 
-              color="secondary" 
-              onClick={() => onLeave(group._id)}
-            >
-              Leave Group
-            </Button>
+            <>
+              <Button 
+                variant="outlined" 
+                color="secondary" 
+                onClick={() => onLeave(group._id)}
+              >
+                Leave Group
+              </Button>
+              {isAdmin && onDelete && (
+                <Button
+                  variant="outlined"
+                  color="error"
+                  startIcon={<DeleteIcon />}
+                  onClick={() => onDelete(group._id)}
+                  sx={{ ml: 1 }}
+                >
+                  Delete Group
+                </Button>
+              )}
+            </>
           ) : (
-            <Button 
-              variant="contained" 
-              color="primary" 
-              onClick={() => onJoin(group._id)}
-            >
-              Join Group
-            </Button>
-          )}
-          {isAdmin && onDelete && (
-            <Button
-              variant="outlined"
-              color="error"
-              startIcon={<DeleteIcon />}
-              onClick={() => onDelete(group._id)}
-              sx={{ ml: 1 }}
-            >
-              Delete Group
-            </Button>
+            <>
+              <Button 
+                variant="contained" 
+                color="primary" 
+                onClick={() => onJoin(group._id)}
+              >
+                {isExited ? 'Rejoin Group' : 'Join Group'}
+              </Button>
+              {isAdmin && onDelete && (
+                <Button
+                  variant="outlined"
+                  color="error"
+                  startIcon={<DeleteIcon />}
+                  onClick={() => onDelete(group._id)}
+                  sx={{ ml: 1 }}
+                >
+                  Delete Group
+                </Button>
+              )}
+            </>
           )}
         </Box>
       </CardContent>
