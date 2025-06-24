@@ -168,150 +168,154 @@ const CreateQuiz: React.FC = () => {
     };
 
     return (
-        <div className="quizzes-container">
-            <div className="quizzes-header">
-                <div className="header-top">
-                    <div className="header-top-row">
-                        <div className="title-section">
-                            <Button
-                                className="back-button"
-                                onClick={() => navigate('/quizzes')}
-                                startIcon={<ArrowBackIcon />}
-                            >
-                                Back to Quizzes
-                            </Button>
-                            <Typography variant="h4" className="quizzes-title">
-                                Create New Quiz
-                            </Typography>
+        <div className="quiz-page">
+            <div className="quiz-page-container">
+                <div className="quizzes-container">
+                    <div className="quizzes-header">
+                        <div className="header-top">
+                            <div className="header-top-row">
+                                <Button
+                                    className="back-button"
+                                    onClick={() => navigate('/quizzes')}
+                                    startIcon={<ArrowBackIcon />}
+                                >
+                                    Back to Quizzes
+                                </Button>
+                                <div className="title-section">
+                                    <Typography variant="h4" className="quizzes-title">
+                                        Create New Quiz
+                                    </Typography>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            {error && (
-                <Typography color="error" className="error-message">
-                    {error}
-                </Typography>
-            )}
-
-            <form onSubmit={handleSubmit} className="quiz-form">
-                <Paper className="quiz-form-section">
-                    <Typography variant="h6" gutterBottom>
-                        Quiz Details
-                    </Typography>
-                    <TextField
-                        fullWidth
-                        label="Title"
-                        value={quizData.title}
-                        onChange={(e) => setQuizData(prev => ({ ...prev, title: e.target.value }))}
-                        required
-                        margin="normal"
-                    />
-                    <TextField
-                        fullWidth
-                        label="Description"
-                        value={quizData.description}
-                        onChange={(e) => setQuizData(prev => ({ ...prev, description: e.target.value }))}
-                        required
-                        multiline
-                        rows={3}
-                        margin="normal"
-                    />
-                    <TextField
-                        fullWidth
-                        label="Time Limit (minutes)"
-                        type="number"
-                        value={quizData.timeLimit}
-                        onChange={(e) => setQuizData(prev => ({ ...prev, timeLimit: e.target.value }))}
-                        margin="normal"
-                        inputProps={{ min: 1 }}
-                    />
-                    <TextField
-                        fullWidth
-                        label="Maximum Attempts"
-                        type="number"
-                        value={quizData.maxAttempts}
-                        onChange={(e) => setQuizData(prev => ({ ...prev, maxAttempts: parseInt(e.target.value) }))}
-                        margin="normal"
-                        inputProps={{ min: 1 }}
-                        required
-                    />
-                </Paper>
-
-                <Paper className="quiz-form-section">
-                    <div className="section-header">
-                        <Typography variant="h6">
-                            Questions
+                    {error && (
+                        <Typography color="error" className="error-message">
+                            {error}
                         </Typography>
-                        <Button
-                            variant="contained"
-                            startIcon={<AddIcon />}
-                            onClick={addQuestion}
-                        >
-                            Add Question
-                        </Button>
-                    </div>
+                    )}
 
-                    {quizData.questions.map((question, questionIndex) => (
-                        <Paper key={questionIndex} className="question-card">
-                            <div className="question-header">
-                                <Typography variant="subtitle1">
-                                    Question {questionIndex + 1}
-                                </Typography>
-                                <IconButton
-                                    onClick={() => removeQuestion(questionIndex)}
-                                    color="error"
-                                >
-                                    <DeleteIcon />
-                                </IconButton>
-                            </div>
-
+                    <form onSubmit={handleSubmit} className="quiz-form">
+                        <Paper className="quiz-form-section">
+                            <Typography variant="h6" gutterBottom>
+                                Quiz Details
+                            </Typography>
                             <TextField
                                 fullWidth
-                                label="Question Text"
-                                value={question.questionText}
-                                onChange={(e) => updateQuestion(questionIndex, 'questionText', e.target.value)}
+                                label="Title"
+                                value={quizData.title}
+                                onChange={(e) => setQuizData(prev => ({ ...prev, title: e.target.value }))}
                                 required
                                 margin="normal"
                             />
+                            <TextField
+                                fullWidth
+                                label="Description"
+                                value={quizData.description}
+                                onChange={(e) => setQuizData(prev => ({ ...prev, description: e.target.value }))}
+                                required
+                                multiline
+                                rows={3}
+                                margin="normal"
+                            />
+                            <TextField
+                                fullWidth
+                                label="Time Limit (minutes)"
+                                type="number"
+                                value={quizData.timeLimit}
+                                onChange={(e) => setQuizData(prev => ({ ...prev, timeLimit: e.target.value }))}
+                                margin="normal"
+                                inputProps={{ min: 1 }}
+                            />
+                            <TextField
+                                fullWidth
+                                label="Maximum Attempts"
+                                type="number"
+                                value={quizData.maxAttempts}
+                                onChange={(e) => setQuizData(prev => ({ ...prev, maxAttempts: parseInt(e.target.value) }))}
+                                margin="normal"
+                                inputProps={{ min: 1 }}
+                                required
+                            />
+                        </Paper>
 
-                            {question.options.map((option, optionIndex) => (
-                                <Box key={optionIndex} className="option-row">
+                        <Paper className="quiz-form-section">
+                            <div className="section-header">
+                                <Typography variant="h6">
+                                    Questions
+                                </Typography>
+                                <Button
+                                    variant="contained"
+                                    startIcon={<AddIcon />}
+                                    onClick={addQuestion}
+                                >
+                                    Add Question
+                                </Button>
+                            </div>
+
+                            {quizData.questions.map((question, questionIndex) => (
+                                <Paper key={questionIndex} className="question-card">
+                                    <div className="question-header">
+                                        <Typography variant="subtitle1">
+                                            Question {questionIndex + 1}
+                                        </Typography>
+                                        <IconButton
+                                            onClick={() => removeQuestion(questionIndex)}
+                                            color="error"
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </div>
+
                                     <TextField
                                         fullWidth
-                                        label={`Option ${optionIndex + 1}`}
-                                        value={option.optionText}
-                                        onChange={(e) => updateOption(questionIndex, optionIndex, 'optionText', e.target.value)}
+                                        label="Question Text"
+                                        value={question.questionText}
+                                        onChange={(e) => updateQuestion(questionIndex, 'questionText', e.target.value)}
                                         required
                                         margin="normal"
                                     />
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={option.isCorrect}
-                                                onChange={(e) => updateOption(questionIndex, optionIndex, 'isCorrect', e.target.checked)}
+
+                                    {question.options.map((option, optionIndex) => (
+                                        <Box key={optionIndex} className="option-row">
+                                            <TextField
+                                                fullWidth
+                                                label={`Option ${optionIndex + 1}`}
+                                                value={option.optionText}
+                                                onChange={(e) => updateOption(questionIndex, optionIndex, 'optionText', e.target.value)}
+                                                required
+                                                margin="normal"
                                             />
-                                        }
-                                        label="Correct Answer"
-                                    />
-                                </Box>
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        checked={option.isCorrect}
+                                                        onChange={(e) => updateOption(questionIndex, optionIndex, 'isCorrect', e.target.checked)}
+                                                    />
+                                                }
+                                                label="Correct Answer"
+                                            />
+                                        </Box>
+                                    ))}
+                                </Paper>
                             ))}
                         </Paper>
-                    ))}
-                </Paper>
 
-                <Box className="form-actions">
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        disabled={loading}
-                        className="submit-button"
-                    >
-                        {loading ? <CircularProgress size={24} /> : 'Create Quiz'}
-                    </Button>
-                </Box>
-            </form>
+                        <Box className="form-actions">
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                disabled={loading}
+                                className="submit-button"
+                            >
+                                {loading ? <CircularProgress size={24} /> : 'Create Quiz'}
+                            </Button>
+                        </Box>
+                    </form>
+                </div>
+            </div>
         </div>
     );
 };
