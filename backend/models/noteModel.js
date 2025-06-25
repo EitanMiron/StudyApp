@@ -14,6 +14,11 @@ const noteSchema = new Schema(
       required: true,
       trim: true,
     },
+    folderId: {
+      type: String,
+      required: true,
+      default: 'General',
+    },
     flashcards: [
       {
         question: {

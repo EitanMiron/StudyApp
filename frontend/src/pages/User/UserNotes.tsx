@@ -15,6 +15,8 @@ import { Dialog, CircularProgress, Typography, Box, Button, TextField, DialogTit
 import AIAssistant from '../../components/AIAssistant';
 import NoteDialog from '../../components/NoteDialog';
 import CloseIcon from '@mui/icons-material/Close';
+import { Dialog as MuiDialog, DialogTitle as MuiDialogTitle, DialogContent as MuiDialogContent, DialogActions as MuiDialogActions } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface Flashcard {
   question: string;
@@ -39,14 +41,21 @@ interface Note {
   folderId?: string;
 }
 
+const DEFAULT_FOLDERS = ['General', 'School', 'Work', 'Personal'];
+
 const UserNotes: React.FC = () => {
     const [notes, setNotes] = useState<Note[]>([]);
     const [isCreating, setIsCreating] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const { fetchDashboardData } = useDashboardData();
-    const [folders, setFolders] = useState<string[]>(['General', 'Math', 'Science', 'History']);
+    const [folders, setFolders] = useState<string[]>(() => {
+        const saved = localStorage.getItem('userFolders');
+        return saved ? JSON.parse(saved) : DEFAULT_FOLDERS;
+    });
     const [selectedFolder, setSelectedFolder] = useState<string>('General');
+    const [newFolderDialogOpen, setNewFolderDialogOpen] = useState(false);
+    const [newFolderName, setNewFolderName] = useState('');
     const [aiQuestions, setAiQuestions] = useState<Array<{ question: string; answer: string }>>([
         { question: "What is the main concept of this note?", answer: "" },
         { question: "Can you explain this in simpler terms?", answer: "" },
@@ -61,6 +70,10 @@ const UserNotes: React.FC = () => {
     useEffect(() => {
         fetchNotes();
     }, []);
+
+    useEffect(() => {
+        localStorage.setItem('userFolders', JSON.stringify(folders));
+    }, [folders]);
 
     const fetchNotes = async () => {
         try {
@@ -83,7 +96,6 @@ const UserNotes: React.FC = () => {
     };
 
     const handleNoteCreated = async (newNoteData: { title: string; content: string; folderId: string; }) => {
-        console.log("Attempting to create note on backend:", newNoteData);
         try {
             const token = localStorage.getItem('token');
             const response = await axios.post('http://localhost:4000/api/noteRoutes/user/notes', {
@@ -198,10 +210,13 @@ const UserNotes: React.FC = () => {
     console.log('UserNotes debug - selectedNoteId:', selectedNote?._id);
 
     // Pagination logic
+    const filteredNotes = selectedFolder === 'General'
+        ? notes.filter(note => note.folderId === 'General')
+        : notes.filter(note => note.folderId === selectedFolder);
     const indexOfLastCard = currentPage * cardsPerPage;
     const indexOfFirstCard = indexOfLastCard - cardsPerPage;
-    const currentNotes = notes.slice(indexOfFirstCard, indexOfLastCard);
-    const totalPages = Math.ceil(notes.length / cardsPerPage);
+    const currentNotes = filteredNotes.slice(indexOfFirstCard, indexOfLastCard);
+    const totalPages = Math.ceil(filteredNotes.length / cardsPerPage);
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -211,7 +226,7 @@ const UserNotes: React.FC = () => {
             const response = await axios.post('http://localhost:4000/api/noteRoutes/user/notes', {
                 term: generatedNote.term,
                 definition: generatedNote.definition,
-                folderId: selectedFolder,
+                folderId: generatedNote.folderId,
             }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -290,6 +305,37 @@ const UserNotes: React.FC = () => {
         }
     };
 
+    const handleAddFolder = () => {
+        if (newFolderName.trim() && !folders.includes(newFolderName.trim())) {
+            setFolders(prev => [...prev, newFolderName.trim()]);
+            setNewFolderName('');
+            setNewFolderDialogOpen(false);
+        }
+    };
+
+    const handleDeleteFolder = async (folder: string) => {
+        if (folder === 'General') return;
+        if (!window.confirm(`Are you sure you want to delete the folder '${folder}' and all its notes?`)) return;
+        try {
+            const token = localStorage.getItem('token');
+            // Delete all notes in this folder
+            const notesToDelete = notes.filter(note => note.folderId === folder);
+            await Promise.all(notesToDelete.map(note =>
+                axios.delete(`http://localhost:4000/api/noteRoutes/user/notes/${note._id}`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                })
+            ));
+            // Remove folder from list
+            setFolders(prev => prev.filter(f => f !== folder));
+            // If currently selected, switch to General
+            if (selectedFolder === folder) setSelectedFolder('General');
+            // Refresh notes
+            await fetchNotes();
+        } catch (error) {
+            console.error('Error deleting folder and its notes:', error);
+        }
+    };
+
     return (
         <div className="user-notes-page">
             {/* Left Sidebar */}
@@ -305,13 +351,36 @@ const UserNotes: React.FC = () => {
                             >
                                 <FolderIcon />
                                 {folder}
+                                {folder !== 'General' && (
+                                    <IconButton size="small" onClick={e => { e.stopPropagation(); handleDeleteFolder(folder); }} style={{ marginLeft: 8 }}>
+                                        <DeleteIcon fontSize="small" />
+                                    </IconButton>
+                                )}
                             </li>
                         ))}
                     </ul>
-                    <button className="sidebar-action" style={{ marginTop: '1rem' }}>
+                    <button className="sidebar-action" style={{ marginTop: '1rem' }} onClick={() => setNewFolderDialogOpen(true)}>
                         <AddIcon />
                         New Folder
                     </button>
+                    <MuiDialog open={newFolderDialogOpen} onClose={() => setNewFolderDialogOpen(false)}>
+                        <MuiDialogTitle>Add New Folder</MuiDialogTitle>
+                        <MuiDialogContent>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                label="Folder Name"
+                                type="text"
+                                fullWidth
+                                value={newFolderName}
+                                onChange={e => setNewFolderName(e.target.value)}
+                            />
+                        </MuiDialogContent>
+                        <MuiDialogActions>
+                            <Button onClick={() => setNewFolderDialogOpen(false)}>Cancel</Button>
+                            <Button onClick={handleAddFolder} variant="contained" color="primary">Add</Button>
+                        </MuiDialogActions>
+                    </MuiDialog>
                 </div>
                 {/* AI Study Assistant and Note Actions at the bottom */}
                 <div className="sidebar-bottom-section">
@@ -437,7 +506,9 @@ const UserNotes: React.FC = () => {
                                         onClose={() => setIsCreating(false)}
                                         onSave={handleNoteCreated}
                                         title="Create New Note"
-                                        note={null} 
+                                        note={null}
+                                        folders={folders}
+                                        defaultFolder={selectedFolder}
                                     />
                                 )}
                                 {selectedNote && isCreating && (
@@ -450,6 +521,8 @@ const UserNotes: React.FC = () => {
                                         onSave={handleNoteUpdated}
                                         title="Edit Note"
                                         note={selectedNote}
+                                        folders={folders}
+                                        defaultFolder={selectedNote.folderId || selectedFolder}
                                     />
                                 )}
                             </div>
@@ -520,6 +593,13 @@ const UserNotes: React.FC = () => {
                         onSaveNote={handleSaveAIGeneratedNote}
                         onSaveFlashcards={handleSaveAIGeneratedFlashcards}
                         onUpdateNoteDefinition={handleUpdateNoteDefinition}
+                        folders={folders}
+                        defaultFolder={selectedFolder}
+                        onAddFolder={(folderName) => {
+                            if (folderName && !folders.includes(folderName)) {
+                                setFolders(prev => [...prev, folderName]);
+                            }
+                        }}
                     />
                 </Dialog>
             )}

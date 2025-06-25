@@ -32,6 +32,7 @@ interface Note {
     collaborators: Collaborator[];
     createdBy: string;
     createdAt: Date;
+    folderId?: string;
 }
 
 interface NoteDialogProps {
@@ -40,13 +41,15 @@ interface NoteDialogProps {
     onSave: (noteData: { title: string; content: string; folderId: string; }) => void;
     note: Note | null;
     title: string;
+    folders: string[];
+    defaultFolder?: string;
 }
 
-const NoteDialog: React.FC<NoteDialogProps> = ({ open, onClose, onSave, note, title }) => {
+const NoteDialog: React.FC<NoteDialogProps> = ({ open, onClose, onSave, note, title, folders, defaultFolder }) => {
     const [formData, setFormData] = useState({
         title: '',
         content: '',
-        folderId: ''
+        folderId: defaultFolder || ''
     });
 
     useEffect(() => {
@@ -54,16 +57,16 @@ const NoteDialog: React.FC<NoteDialogProps> = ({ open, onClose, onSave, note, ti
             setFormData({
                 title: note.term,
                 content: note.definition,
-                folderId: '' // Removed reference to non-existent folderId property
+                folderId: note.folderId || defaultFolder || ''
             });
         } else {
             setFormData({
                 title: '',
                 content: '',
-                folderId: ''
+                folderId: defaultFolder || ''
             });
         }
-    }, [note]);
+    }, [note, defaultFolder]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -108,10 +111,9 @@ const NoteDialog: React.FC<NoteDialogProps> = ({ open, onClose, onSave, note, ti
                             onChange={(e) => setFormData({ ...formData, folderId: e.target.value })}
                             label="Folder"
                         >
-                            <MenuItem value="">None</MenuItem>
-                            <MenuItem value="1">School</MenuItem>
-                            <MenuItem value="2">Work</MenuItem>
-                            <MenuItem value="3">Personal</MenuItem>
+                            {folders.map(folder => (
+                                <MenuItem key={folder} value={folder}>{folder}</MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
                 </DialogContent>

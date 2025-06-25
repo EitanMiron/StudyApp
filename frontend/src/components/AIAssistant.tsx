@@ -44,9 +44,12 @@ interface AIAssistantProps {
     onSaveNote?: (note: any) => void;
     onSaveFlashcards?: (noteId: string, flashcards: any[]) => void;
     onUpdateNoteDefinition?: (noteId: string, newDefinition: string) => void;
+    folders?: string[];
+    defaultFolder?: string;
+    onAddFolder?: (folderName: string) => void;
 }
 
-const AIAssistant: React.FC<AIAssistantProps> = ({ initialQuestion, selectedNoteId, selectedNote, onSaveNote, onSaveFlashcards, onUpdateNoteDefinition }) => {
+const AIAssistant: React.FC<AIAssistantProps> = ({ initialQuestion, selectedNoteId, selectedNote, onSaveNote, onSaveFlashcards, onUpdateNoteDefinition, folders = [], defaultFolder = '', onAddFolder }) => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState(initialQuestion || '');
     const [loading, setLoading] = useState(false);
@@ -61,6 +64,9 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ initialQuestion, selectedNote
     const [noteTopic, setNoteTopic] = useState('');
     const [noteSubject, setNoteSubject] = useState('general');
     const [noteComplexity, setNoteComplexity] = useState('intermediate');
+    const [noteFolder, setNoteFolder] = useState(defaultFolder || (folders[0] || ''));
+    const [newFolderDialogOpen, setNewFolderDialogOpen] = useState(false);
+    const [newFolderName, setNewFolderName] = useState('');
 
     // Flashcard generator state
     const [flashcardCount, setFlashcardCount] = useState(5);
@@ -73,7 +79,8 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ initialQuestion, selectedNote
         if (initialQuestion) {
             handleSend(initialQuestion);
         }
-    }, [initialQuestion]);
+        setNoteFolder(defaultFolder || (folders[0] || ''));
+    }, [initialQuestion, defaultFolder, folders]);
 
     const handleSend = async (messageText?: string) => {
         const textToSend = messageText || input;
@@ -209,10 +216,18 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ initialQuestion, selectedNote
         }
     };
 
-    const handleSaveGeneratedNote = (generatedNote: any) => {
+    const handleSaveGeneratedNote = () => {
+        const lastNoteMsg = messages.filter(m => m.type === 'note').slice(-1)[0];
+        if (!noteFolder || !lastNoteMsg || !lastNoteMsg.data) return;
         if (onSaveNote) {
-            onSaveNote(generatedNote);
+            onSaveNote({
+                term: lastNoteMsg.data.term || noteTopic,
+                definition: lastNoteMsg.data.definition || '',
+                folderId: noteFolder
+            });
         }
+        setShowNoteGenerator(false);
+        setNoteTopic('');
     };
 
     const handleSaveGeneratedFlashcards = (flashcards: any[]) => {
@@ -242,6 +257,15 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ initialQuestion, selectedNote
             }]);
             setShowReplaceConfirmation(false);
             setPendingReplacement(null);
+        }
+    };
+
+    const handleAddFolderLocal = () => {
+        if (newFolderName.trim() && onAddFolder) {
+            onAddFolder(newFolderName.trim());
+            setNoteFolder(newFolderName.trim());
+            setNewFolderName('');
+            setNewFolderDialogOpen(false);
         }
     };
 
@@ -291,7 +315,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ initialQuestion, selectedNote
                             <Button
                                 variant="contained"
                                 size="small"
-                                onClick={() => handleSaveGeneratedNote(note)}
+                                onClick={() => handleSaveGeneratedNote()}
                                 sx={{ mt: 1 }}
                             >
                                 Save Note
@@ -355,7 +379,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ initialQuestion, selectedNote
                 canReplace
             });
 
-    return (
+            return (
                 <Box key={index} sx={{ mb: 2 }}>
                     <Paper elevation={1} sx={{ p: 2, backgroundColor: '#f5f5f5' }}>
                         <Typography variant="h6" color="primary" gutterBottom>
@@ -613,11 +637,47 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ initialQuestion, selectedNote
                             <MenuItem value="advanced">Advanced</MenuItem>
                         </Select>
                     </FormControl>
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel>Folder</InputLabel>
+                        <Select
+                            value={noteFolder}
+                            onChange={(e) => setNoteFolder(e.target.value)}
+                            label="Folder"
+                        >
+                            {folders.map(folder => (
+                                <MenuItem key={folder} value={folder}>{folder}</MenuItem>
+                            ))}
+                            <MenuItem value="__new__" onClick={() => setNewFolderDialogOpen(true)}>
+                                + Create New Folder
+                            </MenuItem>
+                        </Select>
+                    </FormControl>
+                    <Dialog open={newFolderDialogOpen} onClose={() => setNewFolderDialogOpen(false)}>
+                        <DialogTitle>Add New Folder</DialogTitle>
+                        <DialogContent>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                label="Folder Name"
+                                type="text"
+                                fullWidth
+                                value={newFolderName}
+                                onChange={e => setNewFolderName(e.target.value)}
+                            />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={() => setNewFolderDialogOpen(false)}>Cancel</Button>
+                            <Button onClick={handleAddFolderLocal} variant="contained" color="primary">Add</Button>
+                        </DialogActions>
+                    </Dialog>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setShowNoteGenerator(false)}>Cancel</Button>
                     <Button onClick={handleGenerateNote} variant="contained" disabled={!noteTopic.trim()}>
                         Generate
+                    </Button>
+                    <Button onClick={handleSaveGeneratedNote} variant="contained" color="success" disabled={!noteFolder || !messages.some(m => m.type === 'note' && m.data)}>
+                        Save Note
                     </Button>
                 </DialogActions>
             </Dialog>

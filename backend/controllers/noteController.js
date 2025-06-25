@@ -2,7 +2,7 @@ const Note = require('../models/noteModel');
 
 // Personal Notes Controllers
 const createPersonalNote = async (req, res) => {
-    const { term, definition, flashcards } = req.body;
+    const { term, definition, flashcards, folderId } = req.body;
     console.log('Received request body:', req.body);
     console.log('User from token:', req.user);
     
@@ -18,6 +18,7 @@ const createPersonalNote = async (req, res) => {
             term,
             definition,
             flashcards: flashcards || [],
+            folderId: folderId || 'General',
             createdBy: req.user.id,
             collaborators: [{ 
                 userId: req.user.id,
