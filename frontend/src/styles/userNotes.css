@@ -5,7 +5,6 @@
     box-sizing: border-box;
 }
 
-html,
 body {
     width: 100%;
     height: 100%;
@@ -13,6 +12,9 @@ body {
     padding: 0;
     overflow-x: hidden;
     background: none !important; /* Ensure no default background */
+    font-family: 'Inter', Arial, Helvetica, sans-serif;
+    background: #f5f7fa;
+    box-sizing: border-box;
 }
 
 /* Main container styles */
@@ -40,42 +42,62 @@ body {
 
 /* Main content container */
 .user-notes-page .dashboard-container {
+    margin-left: 270px;
+    padding-top: 32px;
+    min-height: 100vh;
+    width: calc(100vw - 270px);
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    flex: 1;
-    padding: 2rem;
-    margin: 0 auto;
-    max-width: 1400px;
+}
+
+.user-notes-page .page-header-col {
     width: 100%;
-}
-
-/* Header section styles */
-.user-notes-page .dashboard-header {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    background: white;
-    border-radius: 1rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.user-notes-page .header-top {
-    display: flex;
-    justify-content: space-between;
     align-items: center;
-    position: relative;
-    width: 100%;
+    margin-bottom: 2.5rem;
+    margin-top: 0.5rem;
 }
 
-.user-notes-page .header-top h1 {
-    color: #2A7B9B;
-    margin: 0;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
+.user-notes-page .back-btn-row {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 18px;
+    margin-left: 18px;
+
+}
+
+.user-notes-page .header-title {
+    text-align: center;
+    font-size: 2.2rem;
+    color: #fff;
+    font-weight: 700;
+    margin: 0 0 0.7rem 0;
+    line-height: 1.2;
+    align-self: center;
+}
+
+.user-notes-page .create-btn-row {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 900px) {
+    .user-notes-page .page-header-col {
+        margin-bottom: 1.2rem;
+    }
+    .user-notes-page .header-title {
+        font-size: 1.5rem;
+        color: #fff;
+    }
+    .user-notes-page .back-btn-row {
+        margin-top: 10px;
+        margin-left: 6px;
+    }
 }
 
 /* Back button styles */
@@ -88,6 +110,8 @@ body {
     padding: 0.5rem 1rem;
     transition: color 0.3s ease;
     z-index: 1;
+    margin-left: 225px;
+    margin-top: 55px;
 }
 
 .user-notes-page .back-button:hover {
@@ -144,8 +168,15 @@ body {
 
 .user-notes-page .content-section {
     flex: 1;
+    overflow-y: auto;
+    padding: 0;
+    margin: 0;
+    min-height: 0;
+    /* Remove max-height so content can scroll naturally */
+    max-height: none;
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
 }
 
 .user-notes-page .notes-container {
@@ -170,20 +201,27 @@ body {
 
 .user-notes-page .notes-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-    flex: 1;
-    padding-bottom: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    min-height: 350px;
 }
 
 .user-notes-page .note-card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 200px;
     background: white;
     border-radius: 1rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     position: relative;
-    height: 200px;
-    display: flex;
-    flex-direction: column;
     transition: transform 0.2s ease;
 }
 
@@ -204,17 +242,33 @@ body {
     font-weight: 500;
 }
 
-.user-notes-page .note-card .note-content {
-    padding: 0 1rem 1rem;
-    flex-grow: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.user-notes-page .note-card .MuiCardContent-root {
+    flex-grow: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 1.5rem !important;
 }
 
-.user-notes-page .note-card .note-content p {
-    font-size: 0.9rem;
-    line-height: 1.5;
-    margin-bottom: 0.5rem;
+.user-notes-page .note-card .MuiCardActions-root {
+    margin-top: auto !important;
+    padding: 1rem 1.5rem !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    background: rgba(248, 249, 250, 0.5);
+}
+
+.user-notes-page .note-card h6 {
+    margin-bottom: 0.5rem !important;
+    color: #2A7B9B !important;
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
+}
+
+.user-notes-page .note-card .definition-text {
+    flex-grow: 1 !important;
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+    line-height: 1.5 !important;
+    color: #4a5568 !important;
 }
 
 .user-notes-page .note-card .note-actions {
@@ -232,8 +286,9 @@ body {
 
 .user-notes-page .note-separator {
     border: none;
-    border-top: 1px dashed rgba(255, 255, 255, 0.4);
-    margin: 0.5rem 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(42, 123, 155, 0.2), transparent);
+    margin: 0.75rem 0;
 }
 
 /* Edit and Delete button styles */
@@ -395,12 +450,6 @@ body {
         padding: 1rem;
     }
 
-    .user-notes-page .dashboard-header {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: flex-start;
-    }
-
     .user-notes-page .notes-grid {
         grid-template-columns: 1fr;
     }
@@ -412,6 +461,27 @@ body {
         right: 10px;
         left: 10px;
         margin: 0 auto;
+    }
+
+    .note-card {
+        min-height: 180px;
+    }
+    
+    .note-card .MuiCardContent-root {
+        padding: 1rem !important;
+    }
+    
+    .note-card .MuiCardActions-root {
+        padding: 0.75rem 1rem !important;
+    }
+    
+    .note-card h6 {
+        font-size: 1.1rem !important;
+    }
+    
+    .expand-button {
+        font-size: 0.875rem !important;
+        padding: 0.2rem 0.4rem !important;
     }
 }
 
@@ -479,92 +549,694 @@ body {
     transform: translateY(0);
 }
 
-/* Sidebar styles */
-.user-notes-page .sidebar {
-    width: 250px;
-    padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 1rem;
-    margin: 1rem;
+/* Sidebar layout */
+.sidebar {
+    width: 270px;
+    background: rgba(32, 93, 115, 0.95);
+    padding: 20px 0 0 0;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    overflow-y: auto;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 100vh;
+    box-sizing: border-box;
 }
 
-.user-notes-page .sidebar-section {
-    margin-bottom: 2rem;
+.folders-section {
+    flex-shrink: 0;
+    padding: 0 20px 0 20px;
 }
 
-.user-notes-page .sidebar-section h3 {
+.sidebar-bottom-section {
+    margin-top: auto;
+    padding: 0 20px 20px 20px;
+    width: 100%;
+}
+
+.ai-section, .note-actions-section {
+    margin-top: 1.5rem;
+}
+
+.sidebar-section h3 {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.folder-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem 0;
+}
+
+.folder-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 8px 0;
+    cursor: pointer;
+    color: #fff;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+.folder-item.active, .folder-item:hover {
+    background: rgba(255,255,255,0.12);
+}
+
+.sidebar-action {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    background: #2A7B9B;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.sidebar-action:hover {
+    background: #23617a;
+}
+
+/* Note Card Layout Improvements */
+.note-card.selected {
+    border: 2px solid #2A7B9B !important;
+    background-color: rgba(42, 123, 155, 0.05) !important;
+    box-shadow: 0 4px 12px rgba(42, 123, 155, 0.2) !important;
+}
+
+.note-card.selected::before {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #2A7B9B;
     color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* AI Assistant Styles */
+.ai-assistant-fab-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.ai-assistant-fab {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #2A7B9B, #57C785);
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ai-assistant-fab:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.ai-assistant-fab:active {
+    transform: scale(0.95);
+}
+
+/* AI Questions Styles */
+.ai-questions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.ai-question {
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(42, 123, 155, 0.1);
+}
+
+.ai-question:hover {
+    background: rgba(42, 123, 155, 0.1);
+    transform: translateX(4px);
+}
+
+.ai-answer {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: rgba(87, 199, 133, 0.1);
+    border-radius: 4px;
+    font-size: 0.875rem;
+    color: #2A7B9B;
+}
+
+/* Enhanced AI Assistant Dialog */
+.MuiDialog-paper {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+/* AI Tools Button Styles */
+.ai-tools-container {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
     margin-bottom: 1rem;
 }
 
-.user-notes-page .folder-list {
-    list-style: none;
-    padding: 0;
+.ai-tool-button {
+    padding: 0.5rem 1rem;
+    border: 1px solid #2A7B9B;
+    background: transparent;
+    color: #2A7B9B;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.ai-tool-button:hover {
+    background: #2A7B9B;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.ai-tool-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Generated Content Styles */
+.generated-note {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border: 1px solid rgba(42, 123, 155, 0.2);
+}
+
+.generated-note h6 {
+    color: #2A7B9B;
+    margin-bottom: 1rem;
+}
+
+.key-points {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.key-point-chip {
+    background: rgba(42, 123, 155, 0.1);
+    color: #2A7B9B;
+    padding: 0.25rem 0.75rem;
+    border-radius: 16px;
+    font-size: 0.75rem;
+    border: 1px solid rgba(42, 123, 155, 0.2);
+}
+
+.examples-list {
+    margin: 1rem 0;
+}
+
+.examples-list h6 {
+    color: #2A7B9B;
+    margin-bottom: 0.5rem;
+}
+
+.examples-list ul {
     margin: 0;
+    padding-left: 1.5rem;
 }
 
-.user-notes-page .folder-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem;
-    color: white;
-    cursor: pointer;
-    border-radius: 0.5rem;
-    transition: background-color 0.3s ease;
+.examples-list li {
+    margin-bottom: 0.25rem;
+    color: #4a5568;
 }
 
-.user-notes-page .folder-item:hover {
-    background: rgba(255, 255, 255, 0.1);
+/* Flashcard Styles */
+.flashcard-container {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border: 1px solid rgba(42, 123, 155, 0.2);
 }
 
-.user-notes-page .folder-item.active {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.user-notes-page .sidebar-action {
-    width: 100%;
-    padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    border-radius: 0.5rem;
-    color: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: background-color 0.3s ease;
-}
-
-.user-notes-page .sidebar-action:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-/* AI Question Generator styles */
-.user-notes-page .ai-questions {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.user-notes-page .ai-question {
-    background: rgba(255, 255, 255, 0.1);
+.flashcard-item {
+    background: white;
+    border-radius: 8px;
     padding: 1rem;
-    border-radius: 0.5rem;
+    margin: 0.5rem 0;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.flashcard-item:hover {
+    border-color: #2A7B9B;
+    box-shadow: 0 2px 8px rgba(42, 123, 155, 0.1);
+}
+
+.flashcard-question {
+    font-weight: 600;
+    color: #2A7B9B;
+    margin-bottom: 0.5rem;
+}
+
+.flashcard-answer {
+    color: #4a5568;
+    font-style: italic;
+}
+
+/* Save Button Styles */
+.save-ai-content-button {
+    background: linear-gradient(45deg, #57C785, #2A7B9B);
     color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+}
+
+.save-ai-content-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(87, 199, 133, 0.3);
+}
+
+.save-ai-content-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .ai-assistant-fab-container {
+        bottom: 10px;
+        right: 10px;
+    }
+    
+    .ai-assistant-fab {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+    
+    .ai-tools-container {
+        flex-direction: column;
+    }
+    
+    .ai-tool-button {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .generated-note,
+    .flashcard-container {
+        padding: 1rem;
+    }
+    
+    .key-points {
+        gap: 0.25rem;
+    }
+    
+    .key-point-chip {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.5rem;
+    }
+}
+
+/* Definition Replacement Styles */
+.definition-replacement-preview {
+    background: rgba(87, 199, 133, 0.1);
+    border: 1px solid rgba(87, 199, 133, 0.3);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.definition-replacement-preview h6 {
+    color: #57C785;
+    margin-bottom: 0.5rem;
+}
+
+.selected-note-context {
+    background: rgba(42, 123, 155, 0.1);
+    border: 1px solid rgba(42, 123, 155, 0.2);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.selected-note-context h6 {
+    color: #2A7B9B;
+    margin-bottom: 0.5rem;
+}
+
+.replace-definition-section {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    margin-top: 1rem;
+    padding-top: 1rem;
+}
+
+.replace-definition-section h6 {
+    color: #666;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.replace-button {
+    background: linear-gradient(45deg, #ff9800, #f57c00) !important;
+    color: white !important;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: 500;
+    text-transform: none;
+    box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);
+    transition: all 0.3s ease;
+    margin-right: 0.5rem;
+}
+
+.replace-button:hover {
+    background: linear-gradient(45deg, #f57c00, #e65100) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+}
+
+.replace-with-keypoints-button {
+    background: transparent !important;
+    color: #2A7B9B !important;
+    border: 1px solid #2A7B9B !important;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: 500;
+    text-transform: none;
+    transition: all 0.3s ease;
+}
+
+.replace-with-keypoints-button:hover {
+    background: #2A7B9B !important;
+    color: white !important;
+    transform: translateY(-1px);
+}
+
+.confirmation-dialog {
+    background: rgba(255, 255, 255, 0.98) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.confirmation-dialog .MuiDialogTitle-root {
+    color: #d32f2f;
+    font-weight: 600;
+}
+
+.confirmation-dialog .MuiDialogContent-root {
+    padding: 1.5rem;
+}
+
+.confirmation-dialog .MuiDialogActions-root {
+    padding: 1rem 1.5rem;
+}
+
+/* Enhanced Explain Concept Styles */
+.explain-concept-tip {
+    background: rgba(42, 123, 155, 0.05);
+    border-left: 3px solid #2A7B9B;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    border-radius: 0 4px 4px 0;
+}
+
+.explain-concept-tip .MuiTypography-root {
+    color: #2A7B9B;
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+/* Success Message Styles */
+.success-message {
+    background: rgba(87, 199, 133, 0.1);
+    color: #2e7d32;
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid rgba(87, 199, 133, 0.3);
+    margin: 0.5rem 0;
+    font-weight: 500;
+}
+
+/* Responsive Design for New Features */
+@media (max-width: 768px) {
+    .replace-definition-section {
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+    }
+    
+    .replace-button,
+    .replace-with-keypoints-button {
+        width: 100%;
+        margin: 0.25rem 0;
+        justify-content: center;
+    }
+    
+    .selected-note-context {
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .definition-replacement-preview {
+        padding: 0.75rem;
+        margin: 0.75rem 0;
+    }
+    
+    .confirmation-dialog .MuiDialogContent-root {
+        padding: 1rem;
+    }
+    
+    .confirmation-dialog .MuiDialogActions-root {
+        padding: 0.75rem 1rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .confirmation-dialog .MuiButton-root {
+        width: 100%;
+    }
+}
+
+/* Note Card Layout Improvements */
+.note-card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 200px;
+}
+
+.note-card .MuiCardContent-root {
+    flex-grow: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 1.5rem !important;
+}
+
+.note-card .MuiCardActions-root {
+    margin-top: auto !important;
+    padding: 1rem 1.5rem !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    background: rgba(248, 249, 250, 0.5);
+}
+
+.note-card h6 {
+    margin-bottom: 0.5rem !important;
+    color: #2A7B9B !important;
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
+}
+
+.note-card .definition-text {
+    flex-grow: 1 !important;
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+    line-height: 1.5 !important;
+    color: #4a5568 !important;
+}
+
+.expand-button {
+    color: #2A7B9B !important;
+    text-transform: none !important;
+    font-weight: 500 !important;
+    padding: 0.25rem 0.5rem !important;
+    min-width: auto !important;
+    margin-top: 0.5rem !important;
+    align-self: flex-start !important;
+}
+
+.expand-button:hover {
+    background: rgba(42, 123, 155, 0.1) !important;
+    color: #1a5a6f !important;
+}
+
+.expand-button .MuiButton-startIcon {
+    margin-right: 0.25rem !important;
+}
+
+/* Note Separator */
+.note-separator {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(42, 123, 155, 0.2), transparent);
+    margin: 0.75rem 0;
+}
+
+/* Responsive Design for Note Cards */
+@media (max-width: 768px) {
+    .note-card {
+        min-height: 180px;
+    }
+    
+    .note-card .MuiCardContent-root {
+        padding: 1rem !important;
+    }
+    
+    .note-card .MuiCardActions-root {
+        padding: 0.75rem 1rem !important;
+    }
+    
+    .note-card h6 {
+        font-size: 1.1rem !important;
+    }
+    
+    .expand-button {
+        font-size: 0.875rem !important;
+        padding: 0.2rem 0.4rem !important;
+    }
+}
+
+/* Selection circle animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Ensure note card content doesn't overlap with selection circle */
+.note-card .MuiCardContent-root {
+    padding-top: 16px !important;
+}
+
+.note-card .MuiTypography-h6 {
+    padding-right: 32px !important;
+}
+
+/* Selection circle hover effects */
+.note-card .selection-circle {
+    transition: all 0.2s ease;
+}
+
+.note-card .selection-circle:hover {
+    background-color: rgba(42, 123, 155, 0.1) !important;
+    transform: scale(1.1) !important;
+}
+
+/* Selection circle styling */
+.note-card .MuiBox-root[onClick] {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.note-card .MuiBox-root[onClick]:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Selected note card styling */
+.note-card.selected {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(42, 123, 155, 0.2) !important;
+}
+
+.note-card.selected .MuiBox-root[onClick] {
+    background-color: rgba(42, 123, 155, 0.1) !important;
+    border-color: #2A7B9B !important;
+}
+
+/* Pagination Dots */
+.pagination-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.pagination-dots .dot {
+    height: 10px;
+    width: 10px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    display: inline-block;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-.user-notes-page .ai-question:hover {
-    background: rgba(255, 255, 255, 0.2);
+.pagination-dots .dot:hover {
+    background-color: rgba(42, 123, 155, 0.7);
 }
 
-.user-notes-page .ai-answer {
-    margin-top: 0.5rem;
-    padding: 0.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 0.25rem;
+.pagination-dots .dot.active {
+    background-color: #fff;
+}
+
+@media (max-width: 900px) {
+  .notes-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 600px) {
+  .notes-grid {
+    grid-template-columns: 1fr;
+  }
+  .content-section {
+    max-height: none;
+  }
 }
