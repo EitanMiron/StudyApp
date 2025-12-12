@@ -1,5 +1,10 @@
 # StudyApp - Collaborative Learning Platform
 
+[![Deployed on Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=study-app-g14e)](https://study-app-g14e.vercel.app)
+
+**🔴 Live Demo:** [https://study-app-g14e.vercel.app](https://study-app-g14e.vercel.app)  
+**⚙️ Backend API:** [https://study-app-eosin.vercel.app](https://study-app-eosin.vercel.app)
+
 StudyApp is a comprehensive web application designed to enhance the learning experience through collaboration, organization, and AI assistance. It allows users to create and join study groups, manage notes, take quizzes, share resources, and track deadlines, all within a unified dashboard.
 
 ## 🚀 Tech Stack
@@ -93,11 +98,24 @@ StudyApp is a comprehensive web application designed to enhance the learning exp
 
 ## ☁️ Deployment
 
-### Vercel (Frontend)
-This project is optimized for deployment on Vercel.
-1.  Push your code to a GitHub repository.
-2.  Import the project into Vercel.
-3.  Set the **Root Directory** to `frontend`.
+The application is fully deployed on **Vercel** using a microservices-like architecture where the Frontend and Backend are deployed as separate projects.
+
+### Frontend Deployment
+- **Platform**: Vercel
+- **URL**: [https://study-app-g14e.vercel.app](https://study-app-g14e.vercel.app)
+- **Configuration**: 
+  - Root Directory: `frontend`
+  - Build Command: `npm run build`
+  - Output Directory: `dist`
+  - Rewrites: Configured in `vercel.json` to proxy API requests to the backend.
+
+### Backend Deployment
+- **Platform**: Vercel (Serverless Functions)
+- **URL**: [https://study-app-eosin.vercel.app](https://study-app-eosin.vercel.app)
+- **Configuration**:
+  - Root Directory: `backend`
+  - Environment Variables: `MONGO_URI`, `JWT_SECRET`, `OPENAI_API_KEY` must be set in Vercel Project Settings.
+  - **Important**: MongoDB Atlas Network Access must be set to allow access from anywhere (`0.0.0.0/0`) for Vercel's dynamic IPs.
 4.  Vercel should automatically detect Vite.
 5.  Add any necessary environment variables in the Vercel dashboard.
 
