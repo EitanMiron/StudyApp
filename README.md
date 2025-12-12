@@ -119,10 +119,6 @@ The application is fully deployed on **Vercel** using a microservices-like archi
 4.  Vercel should automatically detect Vite.
 5.  Add any necessary environment variables in the Vercel dashboard.
 
-### Backend Deployment
-Since the backend is a Node.js/Express app, it needs to be deployed separately or as Serverless Functions.
-- **Option A (Render/Heroku/Railway)**: Deploy the `backend` folder as a web service. Update the frontend's API URL to point to the deployed backend URL.
-- **Option B (Vercel Serverless)**: Refactor the Express app to use Vercel Serverless Functions (requires moving backend code to `api/` directory in the root or configuring `vercel.json`).
 
 ## 📂 Project Structure
 
