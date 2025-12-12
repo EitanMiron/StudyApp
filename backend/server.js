@@ -28,6 +28,22 @@ app.use((req, res, next) => {
     next();
 })
 
+// Health Check Route
+app.get('/', (req, res) => {
+    const dbState = mongoose.connection.readyState;
+    const states = {
+        0: "disconnected",
+        1: "connected",
+        2: "connecting",
+        3: "disconnecting"
+    };
+    res.status(200).json({
+        message: "Backend is running",
+        dbState: states[dbState] || dbState,
+        env: process.env.NODE_ENV
+    });
+});
+
 //routes
 app.use('/api/authRoutes', authRoutes)
 app.use('/api/groupRoutes', groupRoutes)
