@@ -25,10 +25,8 @@ const RegisterAdmin: React.FC = () => {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form data being sent:', formData);
     try {
       const response = await axios.post("/api/authRoutes/register", formData);
-      console.log('Registration response:', response.data);
       
       // Store the token and user data
       const { token, user } = response.data;
