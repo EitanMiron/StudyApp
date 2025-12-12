@@ -213,7 +213,7 @@ const StudyGroups: React.FC = () => {
         await fetchDashboardData();
       }
     } catch (error: any) {
-      console.error('Error leaving group:', error);
+      console.error('Error leaving group:', error.response?.data || error.message || error);
     }
   };
 

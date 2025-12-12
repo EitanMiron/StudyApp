@@ -34,6 +34,7 @@ const RegisterUser: React.FC = () => {
       const { token, user } = response.data;
       localStorage.setItem('token', token);
       localStorage.setItem('email', user.email);
+      localStorage.setItem('userId', user.id);
       
       navigate('/user');
     } catch (err: any) {

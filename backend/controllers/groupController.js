@@ -91,9 +91,12 @@ const leaveGroup = async (req, res) => {
     const userId = req.body.userId;
     const groupId = req.params.id;
 
+    console.log(`[leaveGroup] Request to leave group ${groupId} by user ${userId}`);
+
     try {
         const group = await Group.findById(groupId);
         if (!group) {
+            console.log(`[leaveGroup] Group ${groupId} not found`);
             return res.status(404).json({ error: 'Group not found' });
         }
 
@@ -103,6 +106,8 @@ const leaveGroup = async (req, res) => {
         );
 
         if (memberIndex === -1) {
+            console.log(`[leaveGroup] User ${userId} is not a member of group ${groupId}`);
+            console.log(`[leaveGroup] Current members:`, group.members.map(m => m.userId));
             return res.status(400).json({ error: 'User is not a member of the group' });
         }
 
@@ -112,6 +117,7 @@ const leaveGroup = async (req, res) => {
 
         // Return the updated group
         const updatedGroup = await Group.findById(groupId);
+        console.log(`[leaveGroup] User ${userId} left group ${groupId} successfully`);
         res.status(200).json({ message: 'Left group successfully', group: updatedGroup });
     } catch (error) {
         console.error('Error leaving group:', error);
