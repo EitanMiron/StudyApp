@@ -11,6 +11,7 @@ interface StudyGroupCardProps {
   onDelete?: (groupId: string) => void;
   isEnrolled: boolean;
   isExited?: boolean;
+  disabled?: boolean;
 }
 
 const StudyGroupCard: React.FC<StudyGroupCardProps> = ({ 
@@ -19,12 +20,21 @@ const StudyGroupCard: React.FC<StudyGroupCardProps> = ({
   onLeave, 
   onDelete,
   isEnrolled,
-  isExited = false
+  isExited = false,
+  disabled = false
 }) => {
   const userId = localStorage.getItem('userId');
-  const isAdmin = group.members.some(member => 
-    member.userId === userId && member.role === 'admin'
-  );
+  
+  const isMemberAdmin = group.members.some(member => {
+    const memberId = typeof member.userId === 'object' ? (member.userId as any)._id : member.userId;
+    return memberId === userId && member.role === 'admin';
+  });
+
+  const isCreator = typeof group.createdBy === 'object' 
+    ? (group.createdBy as any)._id === userId 
+    : group.createdBy === userId;
+
+  const canDelete = isMemberAdmin || isCreator;
 
   return (
     <Card className={`study-group-card ${isExited ? 'mini-card' : ''}`}>
@@ -38,6 +48,15 @@ const StudyGroupCard: React.FC<StudyGroupCardProps> = ({
         <Typography variant="body2" color="textSecondary">
           {group.description}
         </Typography>
+        {isCreator ? (
+          <Typography variant="caption" display="block" sx={{ mt: 1, color: 'primary.main', fontStyle: 'italic' }}>
+            Created by you
+          </Typography>
+        ) : (
+          <Typography variant="caption" display="block" sx={{ mt: 1, color: 'text.disabled', fontStyle: 'italic' }}>
+            Created by another user
+          </Typography>
+        )}
         <Box className="group-actions">
           {isEnrolled ? (
             <>
@@ -45,16 +64,18 @@ const StudyGroupCard: React.FC<StudyGroupCardProps> = ({
                 variant="outlined" 
                 color="secondary" 
                 onClick={() => onLeave(group._id)}
+                disabled={disabled}
               >
                 Leave Group
               </Button>
-              {isAdmin && onDelete && (
+              {canDelete && onDelete && (
                 <Button
                   variant="outlined"
                   color="error"
                   startIcon={<DeleteIcon />}
                   onClick={() => onDelete(group._id)}
                   sx={{ ml: 1 }}
+                  disabled={disabled}
                 >
                   Delete Group
                 </Button>
@@ -66,16 +87,18 @@ const StudyGroupCard: React.FC<StudyGroupCardProps> = ({
                 variant="contained" 
                 color="primary" 
                 onClick={() => onJoin(group._id)}
+                disabled={disabled}
               >
                 {isExited ? 'Rejoin Group' : 'Join Group'}
               </Button>
-              {isAdmin && onDelete && (
+              {canDelete && onDelete && (
                 <Button
                   variant="outlined"
                   color="error"
                   startIcon={<DeleteIcon />}
                   onClick={() => onDelete(group._id)}
                   sx={{ ml: 1 }}
+                  disabled={disabled}
                 >
                   Delete Group
                 </Button>
