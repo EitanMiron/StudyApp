@@ -217,37 +217,37 @@ const StudyGroups: React.FC = () => {
     }
   };
 
-  const handleRejoinGroup = async (groupId: string) => {
-    try {
-      const token = localStorage.getItem('token');
-      const userId = localStorage.getItem('userId');
+  // const handleRejoinGroup = async (groupId: string) => {
+  //   try {
+  //     const token = localStorage.getItem('token');
+  //     const userId = localStorage.getItem('userId');
       
-      if (!token || !userId) {
-        navigate('/login/user');
-        return;
-      }
+  //     if (!token || !userId) {
+  //       navigate('/login/user');
+  //       return;
+  //     }
 
-      // Find the group to check if user is creator
-      const groupToJoin = exitedGroups.find(g => g._id === groupId);
-      const role = (groupToJoin && groupToJoin.createdBy === userId) ? 'admin' : 'member';
+  //     // Find the group to check if user is creator
+  //     const groupToJoin = exitedGroups.find(g => g._id === groupId);
+  //     const role = (groupToJoin && groupToJoin.createdBy === userId) ? 'admin' : 'member';
 
-      const response = await axios.post(
-        `/api/groupRoutes/groups/${groupId}/join`,
-        { userId, role },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+  //     const response = await axios.post(
+  //       `/api/groupRoutes/groups/${groupId}/join`,
+  //       { userId, role },
+  //       { headers: { Authorization: `Bearer ${token}` } }
+  //     );
 
-      if (response.data.message === 'Joined group successfully') {
-        // Move group back to current groups
-        setExitedGroups(prev => prev.filter(group => group._id !== groupId));
-        setGroups(prevGroups => [...prevGroups, response.data.group]);
-        setEnrolledGroups(prevGroups => [...prevGroups, response.data.group]);
-        await fetchDashboardData();
-      }
-    } catch (error: any) {
-      console.error('Error rejoining group:', error);
-    }
-  };
+  //     if (response.data.message === 'Joined group successfully') {
+  //       // Move group back to current groups
+  //       setExitedGroups(prev => prev.filter(group => group._id !== groupId));
+  //       setGroups(prevGroups => [...prevGroups, response.data.group]);
+  //       setEnrolledGroups(prevGroups => [...prevGroups, response.data.group]);
+  //       await fetchDashboardData();
+  //     }
+  //   } catch (error: any) {
+  //     console.error('Error rejoining group:', error);
+  //   }
+  // };
 
   const handleCreateGroup = async () => {
     if (!newGroup.name || !newGroup.subject || !newGroup.description) {
@@ -405,7 +405,7 @@ const StudyGroups: React.FC = () => {
               setCurrentPage(1); // Reset to first page on folder change
             }}
           >
-            Current Groups ({groups.length})
+            All Groups ({groups.length})
           </div>
           <div 
             className={`sidebar-folder ${activeFolder === 'exited' ? 'active' : ''}`}
@@ -414,7 +414,7 @@ const StudyGroups: React.FC = () => {
               setCurrentPage(1); // Reset to first page on folder change
             }}
           >
-            Exited Groups ({exitedGroups.length})
+            Available Groups ({exitedGroups.length})
           </div>
           <Box className="sidebar-enrolled-count">
               <Typography variant="subtitle1" className="enrolled-count">
@@ -458,17 +458,22 @@ const StudyGroups: React.FC = () => {
 
             {activeFolder === 'current' ? (
               <div className="groups-list">
-                {paginatedDisplayGroups.map((group) => (
-                  <div key={group._id} className="group-card">
-                    <StudyGroupCard
-                      group={group}
-                      onJoin={handleJoinGroup}
-                      onLeave={handleLeaveGroup}
-                      onDelete={handleDeleteGroup}
-                      isEnrolled={true}
-                    />
-                  </div>
-                ))}
+                {paginatedDisplayGroups.map((group) => {
+                  const currentUserId = localStorage.getItem('userId');
+                  const isEnrolled = group.members.some(member => member.userId === currentUserId);
+                  
+                  return (
+                    <div key={group._id} className="group-card">
+                      <StudyGroupCard
+                        group={group}
+                        onJoin={handleJoinGroup}
+                        onLeave={handleLeaveGroup}
+                        onDelete={handleDeleteGroup}
+                        isEnrolled={isEnrolled}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             ) : (
               <div className="exited-groups-list">
@@ -476,18 +481,16 @@ const StudyGroups: React.FC = () => {
                   <div key={group._id} className="group-card">
                     <StudyGroupCard
                       group={group}
-                      onJoin={handleRejoinGroup}
-                      onLeave={() => {}} // No leave functionality for exited groups
+                      onJoin={handleJoinGroup}
+                      onLeave={() => {}} 
                       onDelete={handleDeleteGroup}
                       isEnrolled={false}
-                      isExited={true}
+                      isExited={false}
                     />
                   </div>
                 ))}
               </div>
-            )}
-
-            {totalPages > 1 && (
+            )}            {totalPages > 1 && (
               <Box className="pagination-dots">
                 {Array.from({ length: totalPages }, (_, i) => (
                   <span
