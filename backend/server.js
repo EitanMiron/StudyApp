@@ -43,8 +43,13 @@ app.use('/api/userRoutes', userRoutes)
 app.use('/api/ai', aiRoutes)
 
 //connect to Database
+if (!process.env.MONGO_URI) {
+    console.error("CRITICAL ERROR: MONGO_URI is not defined in environment variables.");
+}
+
 mongoose.connect(process.env.MONGO_URI)
 .then(() => {
+    console.log("MongoDB Connected Successfully");
     // Only listen if not in Vercel environment (or if run directly)
     if (process.env.NODE_ENV !== 'production') {
         app.listen(process.env.PORT, () => {
@@ -53,7 +58,7 @@ mongoose.connect(process.env.MONGO_URI)
     }
 })
 .catch((error) => {
-    console.log(error)
+    console.error("MongoDB Connection Error:", error);
 })
 
 module.exports = app;
