@@ -12,6 +12,7 @@
     z-index: 0;
     color: #ffffff;
     font-family: Arial, sans-serif;
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 /* Main content wrapper */

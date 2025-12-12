@@ -30,6 +30,7 @@ const StudyGroups: React.FC = () => {
   const [users, setUsers] = useState<{ id: string; name: string }[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<{ id: string; name: string }[]>([]);
   const [invitations, setInvitations] = useState<any[]>([]);
+  const [processingGroupId, setProcessingGroupId] = useState<string | null>(null); // Track which group is being processed
 
   const checkAuth = () => {
     const token = localStorage.getItem('token');
@@ -84,15 +85,23 @@ const StudyGroups: React.FC = () => {
       setGroups(response.data);
       
       const userId = getUserId();
+
       // Get all groups where user is a member
       const userGroups = response.data.filter((group: Group) => 
-        group.members.some(member => member.userId === userId)
+        group.members.some(member => {
+            // Handle potential object/string mismatch
+            const memberId = typeof member.userId === 'object' ? (member.userId as any)._id : member.userId;
+            return memberId === userId;
+        })
       );
       setEnrolledGroups(userGroups);
 
       // Get all groups where user is not a member
       const nonUserGroups = response.data.filter((group: Group) => 
-        !group.members.some(member => member.userId === userId)
+        !group.members.some(member => {
+            const memberId = typeof member.userId === 'object' ? (member.userId as any)._id : member.userId;
+            return memberId === userId;
+        })
       );
       setExitedGroups(nonUserGroups);
       
@@ -139,6 +148,8 @@ const StudyGroups: React.FC = () => {
   };
 
   const handleJoinGroup = async (groupId: string) => {
+    if (processingGroupId === groupId) return; // Prevent double clicks
+    setProcessingGroupId(groupId);
     try {
       const token = localStorage.getItem('token');
       const userId = localStorage.getItem('userId');
@@ -174,11 +185,15 @@ const StudyGroups: React.FC = () => {
         await fetchDashboardData();
       }
     } catch (error: any) {
-      console.error('Error joining group:', error);
+      console.error('Error joining group:', error.response?.data || error.message || error);
+    } finally {
+      setProcessingGroupId(null);
     }
   };
 
   const handleLeaveGroup = async (groupId: string) => {
+    if (processingGroupId === groupId) return; // Prevent double clicks
+    setProcessingGroupId(groupId);
     try {
       const token = localStorage.getItem('token');
       const userId = localStorage.getItem('userId');
@@ -198,11 +213,21 @@ const StudyGroups: React.FC = () => {
         // Move group to exited groups
         const leftGroup = groups.find(group => group._id === groupId);
         if (leftGroup) {
-          setExitedGroups(prev => [...prev, leftGroup]);
+          // Update the group object to reflect that the user is no longer a member
+          // This is crucial because 'groups' state holds the source of truth for "All Groups"
+          const updatedGroup = {
+             ...leftGroup,
+             members: leftGroup.members.filter(m => {
+                 const mId = typeof m.userId === 'object' ? (m.userId as any)._id : m.userId;
+                 return mId !== userId;
+             })
+          };
+          
+          setExitedGroups(prev => [...prev, updatedGroup]);
+          
+          // Update the group in the main 'groups' list instead of removing it
+          setGroups(prevGroups => prevGroups.map(g => g._id === groupId ? updatedGroup : g));
         }
-
-        // Remove from current groups
-        setGroups(prevGroups => prevGroups.filter(group => group._id !== groupId));
         
         // Update enrolled groups
         setEnrolledGroups(prevGroups => 
@@ -214,6 +239,8 @@ const StudyGroups: React.FC = () => {
       }
     } catch (error: any) {
       console.error('Error leaving group:', error.response?.data || error.message || error);
+    } finally {
+      setProcessingGroupId(null);
     }
   };
 
@@ -460,7 +487,10 @@ const StudyGroups: React.FC = () => {
               <div className="groups-list">
                 {paginatedDisplayGroups.map((group) => {
                   const currentUserId = localStorage.getItem('userId');
-                  const isEnrolled = group.members.some(member => member.userId === currentUserId);
+                  const isEnrolled = group.members.some(member => {
+                    const memberId = typeof member.userId === 'object' ? (member.userId as any)._id : member.userId;
+                    return memberId === currentUserId;
+                  });
                   
                   return (
                     <div key={group._id} className="group-card">
@@ -470,6 +500,7 @@ const StudyGroups: React.FC = () => {
                         onLeave={handleLeaveGroup}
                         onDelete={handleDeleteGroup}
                         isEnrolled={isEnrolled}
+                        disabled={processingGroupId === group._id}
                       />
                     </div>
                   );
@@ -481,11 +512,12 @@ const StudyGroups: React.FC = () => {
                   <div key={group._id} className="group-card">
                     <StudyGroupCard
                       group={group}
-                      onJoin={handleJoinGroup}
+                      onJoin={handleJoinGroup} 
                       onLeave={() => {}} 
                       onDelete={handleDeleteGroup}
                       isEnrolled={false}
                       isExited={false}
+                      disabled={processingGroupId === group._id}
                     />
                   </div>
                 ))}

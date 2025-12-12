@@ -53,9 +53,12 @@ const joinGroup = async (req, res) => {
     const { userId, role } = req.body;
     const groupId = req.params.id;
 
+    console.log(`[joinGroup] Request to join group ${groupId} by user ${userId}`);
+
     try {
         const group = await Group.findById(groupId);
         if (!group) {
+            console.log(`[joinGroup] Group ${groupId} not found`);
             return res.status(404).json({ error: 'Group not found' });
         }
 
@@ -65,6 +68,7 @@ const joinGroup = async (req, res) => {
         );
         
         if (isMember) {
+            console.log(`[joinGroup] User ${userId} is already a member of group ${groupId}`);
             return res.status(400).json({ error: 'User already a member of the group' });
         }
 
@@ -79,6 +83,7 @@ const joinGroup = async (req, res) => {
         
         // Return the updated group
         const updatedGroup = await Group.findById(groupId);
+        console.log(`[joinGroup] User ${userId} joined group ${groupId} successfully`);
         res.status(200).json({ message: 'Joined group successfully', group: updatedGroup });
     } catch (error) {
         console.error('Error joining group:', error);
@@ -101,13 +106,19 @@ const leaveGroup = async (req, res) => {
         }
 
         // Find the member index
-        const memberIndex = group.members.findIndex(member => 
-            member.userId && member.userId.toString() === userId
-        );
+        const memberIndex = group.members.findIndex(member => {
+            const idString = member.userId ? member.userId.toString() : '';
+            // console.log(`Comparing ${idString} with ${userId}`); // Too verbose for production, but good for deep debug
+            return idString === userId;
+        });
 
         if (memberIndex === -1) {
             console.log(`[leaveGroup] User ${userId} is not a member of group ${groupId}`);
-            console.log(`[leaveGroup] Current members:`, group.members.map(m => m.userId));
+            console.log(`[leaveGroup] Group members dump:`, JSON.stringify(group.members.map(m => ({
+                userId: m.userId,
+                userIdType: typeof m.userId,
+                userIdString: m.userId ? m.userId.toString() : 'null'
+            }))));
             return res.status(400).json({ error: 'User is not a member of the group' });
         }
 
