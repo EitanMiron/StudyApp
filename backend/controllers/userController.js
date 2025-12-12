@@ -9,6 +9,7 @@ const mongoose = require('mongoose');
 const getUserDashboard = async (req, res) => {
     try {
         const userId = new mongoose.Types.ObjectId(req.user.id);
+        console.log('Fetching dashboard for user:', userId);
         
         // Get all groups the user is a member of
         const userGroups = await Group.find({ 'members.userId': userId }).select('_id');
@@ -25,6 +26,11 @@ const getUserDashboard = async (req, res) => {
         const totalResources = await Resource.countDocuments({ 
             groupId: { $in: groupIds }
         });
+        
+        // Debug: Check all deadlines for this user
+        const allDeadlines = await Deadline.find({ user: userId });
+        console.log('All deadlines for user:', allDeadlines.length);
+        
         const upcomingDeadlines = await Deadline.find({
             user: userId,
             dueDate: { $gte: new Date() },
@@ -32,15 +38,21 @@ const getUserDashboard = async (req, res) => {
         })
         .sort('dueDate')
         .limit(5)
-        .select('title type dueDate');
+        .select('title type dueDate priority');
 
-        res.status(200).json({
+        console.log('Upcoming deadlines found:', upcomingDeadlines.length);
+        console.log('Upcoming deadlines:', upcomingDeadlines);
+
+        const response = {
             enrolledGroups,
             completedQuizzes,
             totalNotes,
             totalResources,
             upcomingDeadlines
-        });
+        };
+        
+        console.log('Dashboard response:', response);
+        res.status(200).json(response);
     } catch (error) {
         console.error('Error fetching dashboard data:', error);
         res.status(500).json({ message: 'Server error' });

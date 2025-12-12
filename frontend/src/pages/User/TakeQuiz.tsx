@@ -62,7 +62,7 @@ const TakeQuiz: React.FC = () => {
             }
 
                 const response = await axios.get(
-                    `http://localhost:4000/api/quizRoutes/groups/${groupId}/quizzes/${quizId}`,
+                    `/api/quizRoutes/groups/${groupId}/quizzes/${quizId}`,
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
 
@@ -138,7 +138,7 @@ const TakeQuiz: React.FC = () => {
             const answersArray = quiz.questions.map(question => answers[question._id]);
 
             await axios.post(
-                `http://localhost:4000/api/quizRoutes/groups/${groupIdStr}/quizzes/${quizId}/submit`,
+                `/api/quizRoutes/groups/${groupIdStr}/quizzes/${quizId}/submit`,
                 {
                     answers: answersArray,
                     attemptNumber: currentAttempt

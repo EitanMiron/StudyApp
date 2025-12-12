@@ -45,13 +45,18 @@ app.use('/api/ai', aiRoutes)
 //connect to Database
 mongoose.connect(process.env.MONGO_URI)
 .then(() => {
-    app.listen(process.env.PORT, () => {
-        console.log("Connected to Database: Listening on port", process.env.PORT);
-    })
+    // Only listen if not in Vercel environment (or if run directly)
+    if (process.env.NODE_ENV !== 'production') {
+        app.listen(process.env.PORT, () => {
+            console.log("Connected to Database: Listening on port", process.env.PORT);
+        })
+    }
 })
 .catch((error) => {
     console.log(error)
 })
+
+module.exports = app;
 
 
 

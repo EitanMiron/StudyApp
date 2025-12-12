@@ -100,7 +100,7 @@ const CreateQuiz: React.FC = () => {
             }
 
             const response = await axios.post(
-                `http://localhost:4000/api/quizRoutes/groups/${groupId}/quizzes`,
+                `/api/quizRoutes/groups/${groupId}/quizzes`,
                 {
                     ...quizData,
                     timeLimit: quizData.timeLimit ? parseInt(quizData.timeLimit) : null,

@@ -2,17 +2,24 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+export interface Deadline {
+    _id: string;
+    title: string;
+    description?: string;
+    type: string;
+    dueDate: string;
+    priority?: string;
+    status?: string;
+    isCompleted?: boolean;
+}
+
 interface DashboardStats {
     totalResources: number;
     enrolledGroups: number;
     completedQuizzes: number;
     totalNotes: number;
-    upcomingDeadlines: Array<{
-        id: string;
-        title: string;
-        type: string;
-        dueDate: string;
-    }>;
+    upcomingDeadlines: Deadline[];
+    allDeadlines: Deadline[];
 }
 
 // Create a shared state outside the hook
@@ -21,7 +28,8 @@ let sharedStats: DashboardStats = {
     completedQuizzes: 0,
     totalNotes: 0,
     totalResources: 0,
-    upcomingDeadlines: []
+    upcomingDeadlines: [],
+    allDeadlines: []
 };
 
 // Create a list of setState functions to update
@@ -49,13 +57,18 @@ export const useDashboardData = () => {
                 navigate('/login/user');
                 return;
             }
-            const response = await axios.get('http://localhost:4000/api/userRoutes/dashboard', {
+            // Fetch dashboard stats (for enrolledGroups, quizzes, etc.)
+            const dashRes = await axios.get('/api/userRoutes/dashboard', {
                 headers: { Authorization: `Bearer ${token}` }
             });
+            // Fetch all deadlines
+            const deadlinesRes = await axios.get('/api/userRoutes/deadlines', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const allDeadlines = deadlinesRes.data;
             // Update shared state
-            sharedStats = response.data;
-            // Update all components using the hook
-            stateUpdaters.forEach(updater => updater(response.data));
+            sharedStats = { ...dashRes.data, allDeadlines };
+            stateUpdaters.forEach(updater => updater(sharedStats));
         } catch (error: any) {
             console.error('Error fetching dashboard data:', error);
             if (error.response?.status === 401 || error.response?.status === 403) {

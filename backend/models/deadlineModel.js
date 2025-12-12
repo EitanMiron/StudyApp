@@ -49,6 +49,11 @@ const deadlineSchema = new mongoose.Schema({
         type: String,
         enum: ['low', 'medium', 'high'],
         default: 'medium'
+    },
+    status: {
+        type: String,
+        enum: ['Not Ready', 'Somewhat Ready', 'Ready'],
+        default: 'Not Ready'
     }
 }, {
     timestamps: true

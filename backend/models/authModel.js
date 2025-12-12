@@ -27,6 +27,17 @@ const authSchema = new Schema(
             trim: true,
             lowercase: true
         },
+        isActive: {
+            type: Boolean,
+            default: true
+        },
+        lastLogin: {
+            type: Date
+        },
+        loginCount: {
+            type: Number,
+            default: 0
+        },
         profilePic: {
             type: String,
             default: ''

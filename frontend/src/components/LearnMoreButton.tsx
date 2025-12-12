@@ -33,7 +33,7 @@ const LearnMoreButton: React.FC = () => {
           borderLeft: "3px solid #4CAF50",
           backdropFilter: "blur(5px)"
         }}>
-          Quizlet ahhh App is a modern learning platform designed to help students study more effectively.
+          StudyApp is a modern learning platform designed to help students study more effectively.
           Our application offers various study modes, flashcards, and quizzes.
         </p>
       )}

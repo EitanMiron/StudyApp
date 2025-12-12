@@ -61,7 +61,7 @@ const QuizSubmission: React.FC = () => {
                 const groupIdStr = groupId;
 
                 const response = await axios.get(
-                    `http://localhost:4000/api/quizRoutes/groups/${groupIdStr}/quizzes/${quizId}`,
+                    `/api/quizRoutes/groups/${groupIdStr}/quizzes/${quizId}`,
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
 
@@ -118,7 +118,7 @@ const QuizSubmission: React.FC = () => {
             const groupIdStr = groupId;
 
             const response = await axios.post(
-                `http://localhost:4000/api/quizRoutes/groups/${groupIdStr}/quizzes/${quizId}/submit`,
+                `/api/quizRoutes/groups/${groupIdStr}/quizzes/${quizId}/submit`,
                 {
                     answers,
                     attemptNumber: currentAttempt

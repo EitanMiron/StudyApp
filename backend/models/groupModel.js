@@ -44,4 +44,15 @@ const groupSchema = new Schema({
     },
 }, { timestamps: true })
 
+groupSchema.virtual('memberCount').get(function() {
+    return this.members ? this.members.length : 0;
+});
+
+groupSchema.virtual('status').get(function() {
+    return this.members && this.members.length > 0 ? 'active' : 'inactive';
+});
+
+groupSchema.set('toObject', { virtuals: true });
+groupSchema.set('toJSON', { virtuals: true });
+
 module.exports = mongoose.model('Group', groupSchema)

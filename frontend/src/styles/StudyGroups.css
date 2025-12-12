@@ -3,35 +3,21 @@
     box-sizing: border-box;
 }
 
-.study-groups-page html,
-.study-groups-page body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-
-.study-groups-page body {
-    color: #ffffff;
-    font-family: Arial, sans-serif;
-    padding-top: 0;
-}
-
 .study-groups-page {
     background: linear-gradient(90deg, rgba(42, 123, 155, 1) 11%, rgba(87, 199, 133, 1) 73%, rgba(237, 221, 83, 1) 100%);
+    background-attachment: fixed;
     min-height: 100vh;
     width: 100%;
     position: relative;
     z-index: 0;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
 }
 
 /* Main content wrapper */
 .study-groups-page .main-content-wrapper {
     width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
+    /* display: flex; Removed to prevent layout issues with fixed sidebar */
     padding-top: 130px;
     position: relative;
     z-index: 1;
@@ -146,6 +132,7 @@
     background: transparent;
     overflow-y: auto;
     max-height: calc(100vh - 130px - 40px);
+    min-height: 100%; /* Added to ensure it fills height */
 }
 
 .study-groups-page .study-groups-container .study-groups-header {
@@ -375,11 +362,20 @@
     box-shadow: 0 6px 20px rgba(42, 123, 155, 0.3) !important;
 }
 
-/* Miniature card for exited groups */
+/* Miniature card for exited groups - Removed scaling to fix layout */
 .study-groups-page .mini-card {
-    transform: scale(0.8);
-    transform-origin: top left;
-    margin: -20px;
+    /* transform: scale(0.8); */
+    /* transform-origin: top left; */
+    /* margin: -20px; */
+    opacity: 0.9;
+}
+
+/* Ensure transparency for containers to show gradient */
+.study-groups-page .main-content-wrapper,
+.study-groups-page .main-content,
+.study-groups-page .study-groups-container,
+.study-groups-page .MuiContainer-root {
+    background: transparent !important;
 }
 
 /* Styling for the Back to Dashboard button */
@@ -437,32 +433,55 @@
     background: transparent !important;
     border: none !important;
     padding: 0 !important;
-    margin-top: -5px;
+    margin-top: 10px;
+}
+
+.study-groups-page .search-bar {
+    width: 100%;
 }
 
 .study-groups-page .search-bar .MuiInputBase-root {
-    color: #000000;
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.study-groups-page .search-bar .MuiInputBase-root:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+.study-groups-page .search-bar .MuiInputBase-root.Mui-focused {
+    background-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
 }
 
 .study-groups-page .search-bar .MuiInputBase-input {
-    padding: 0.75rem;
+    padding: 10px 14px;
     font-size: 1rem;
 }
 
 .study-groups-page .search-bar .MuiInputBase-input::placeholder {
-    color: #000000;
+    color: rgba(255, 255, 255, 0.7);
+    opacity: 1;
 }
 
 .study-groups-page .search-bar .MuiOutlinedInput-notchedOutline {
-    border-color: #050000;
+    border-color: rgba(255, 255, 255, 0.3);
+    border-width: 1px;
 }
 
 .study-groups-page .search-bar .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-    border-color: #000000;
+    border-color: rgba(255, 255, 255, 0.5);
 }
 
 .study-groups-page .search-bar .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
     border-color: #ffffff;
+    border-width: 1px;
+}
+
+.study-groups-page .search-bar .MuiSvgIcon-root {
+    color: rgba(255, 255, 255, 0.7);
 }
 
 /* Header Text Styles */
@@ -556,4 +575,4 @@
     .study-groups-page .study-groups-container {
         padding: 15px;
     }
-} 
+}

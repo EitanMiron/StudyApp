@@ -72,7 +72,7 @@ const UserResources: React.FC = () => {
                 const headers = { Authorization: `Bearer ${token}` };
 
                 // First, fetch all groups the user is enrolled in
-                const groupsResponse = await axios.get('http://localhost:4000/api/groupRoutes/groups', { headers });
+                const groupsResponse = await axios.get('/api/groupRoutes/groups', { headers });
                 const userGroups = groupsResponse.data.filter((group: Group) => 
                     group.members.some(member => member.userId === localStorage.getItem('userId'))
                 );
@@ -83,7 +83,7 @@ const UserResources: React.FC = () => {
                 for (const group of userGroups) {
                     try {
                         const resourcesResponse = await axios.get(
-                            `http://localhost:4000/api/resourceRoutes/groups/${group._id}/resources`,
+                            `/api/resourceRoutes/groups/${group._id}/resources`,
                             { headers }
                         );
                         allResources.push(...resourcesResponse.data);
@@ -111,7 +111,7 @@ const UserResources: React.FC = () => {
 
             const headers = { Authorization: `Bearer ${token}` };
             const response = await axios.post(
-                `http://localhost:4000/api/resourceRoutes/groups/${newResource.groupId}/resources`,
+                `/api/resourceRoutes/groups/${newResource.groupId}/resources`,
                 {
                     ...newResource,
                     type: newResource.type || 'link',
@@ -168,7 +168,7 @@ const UserResources: React.FC = () => {
 
             const headers = { Authorization: `Bearer ${token}` };
             await axios.delete(
-                `http://localhost:4000/api/resourceRoutes/groups/${resourceToDelete.groupId}/resources/${resourceToDelete._id}`,
+                `/api/resourceRoutes/groups/${resourceToDelete.groupId}/resources/${resourceToDelete._id}`,
                 { headers }
             );
 
@@ -207,7 +207,7 @@ const UserResources: React.FC = () => {
 
             const headers = { Authorization: `Bearer ${token}` };
             const response = await axios.put(
-                `http://localhost:4000/api/resourceRoutes/groups/${resourceToEdit.groupId}/resources/${resourceToEdit._id}`,
+                `/api/resourceRoutes/groups/${resourceToEdit.groupId}/resources/${resourceToEdit._id}`,
                 editedResource,
                 { headers }
             );

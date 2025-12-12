@@ -67,7 +67,7 @@ const UserQuizzes: React.FC = () => {
             }
 
             console.log('Fetching groups with token:', token.substring(0, 10) + '...');
-            const response = await axios.get('http://localhost:4000/api/userRoutes/groups', {
+            const response = await axios.get('/api/userRoutes/groups', {
                 headers: { 
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -99,7 +99,7 @@ const UserQuizzes: React.FC = () => {
                 return;
             }
 
-            const response = await axios.get('http://localhost:4000/api/userRoutes/quizzes', {
+            const response = await axios.get('/api/userRoutes/quizzes', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setQuizzes(response.data);
@@ -167,7 +167,7 @@ const UserQuizzes: React.FC = () => {
 
             const groupId = typeof quiz.groupId === 'string' ? quiz.groupId : quiz.groupId._id;
 
-            await axios.delete(`http://localhost:4000/api/quizRoutes/groups/${groupId}/quizzes/${quizToDelete}`, {
+            await axios.delete(`/api/quizRoutes/groups/${groupId}/quizzes/${quizToDelete}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 

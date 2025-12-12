@@ -79,7 +79,7 @@ const UserNotes: React.FC = () => {
         try {
             setIsLoading(true);
             const token = localStorage.getItem('token');
-            const response = await axios.get('http://localhost:4000/api/noteRoutes/user/notes', {
+            const response = await axios.get('/api/noteRoutes/user/notes', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             console.log("Fetched notes data:", response.data);
@@ -98,7 +98,7 @@ const UserNotes: React.FC = () => {
     const handleNoteCreated = async (newNoteData: { title: string; content: string; folderId: string; }) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.post('http://localhost:4000/api/noteRoutes/user/notes', {
+            const response = await axios.post('/api/noteRoutes/user/notes', {
                 term: newNoteData.title,
                 definition: newNoteData.content,
                 folderId: newNoteData.folderId,
@@ -129,7 +129,7 @@ const UserNotes: React.FC = () => {
         if (!selectedNote) return; 
         try {
             const token = localStorage.getItem('token');
-            await axios.put(`http://localhost:4000/api/noteRoutes/user/notes/${selectedNote._id}`, {
+            await axios.put(`/api/noteRoutes/user/notes/${selectedNote._id}`, {
                 term: updatedNoteData.title,
                 definition: updatedNoteData.content,
                 folderId: updatedNoteData.folderId,
@@ -160,7 +160,7 @@ const UserNotes: React.FC = () => {
         console.log("Attempting to delete note with ID:", noteId);
         try {
             const token = localStorage.getItem('token');
-            await axios.delete(`http://localhost:4000/api/noteRoutes/user/notes/${noteId}`, {
+            await axios.delete(`/api/noteRoutes/user/notes/${noteId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setNotes(prevNotes => prevNotes.filter(note => note._id !== noteId));
@@ -223,7 +223,7 @@ const UserNotes: React.FC = () => {
     const handleSaveAIGeneratedNote = async (generatedNote: any) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.post('http://localhost:4000/api/noteRoutes/user/notes', {
+            const response = await axios.post('/api/noteRoutes/user/notes', {
                 term: generatedNote.term,
                 definition: generatedNote.definition,
                 folderId: generatedNote.folderId,
@@ -255,7 +255,7 @@ const UserNotes: React.FC = () => {
     const handleSaveAIGeneratedFlashcards = async (noteId: string, flashcards: any[]) => {
         try {
             const token = localStorage.getItem('token');
-            await axios.put(`http://localhost:4000/api/noteRoutes/user/notes/${noteId}`, {
+            await axios.put(`/api/noteRoutes/user/notes/${noteId}`, {
                 flashcards: flashcards
             }, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -279,7 +279,7 @@ const UserNotes: React.FC = () => {
     const handleUpdateNoteDefinition = async (noteId: string, newDefinition: string) => {
         try {
             const token = localStorage.getItem('token');
-            await axios.put(`http://localhost:4000/api/noteRoutes/user/notes/${noteId}`, {
+            await axios.put(`/api/noteRoutes/user/notes/${noteId}`, {
                 definition: newDefinition
             }, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -321,7 +321,7 @@ const UserNotes: React.FC = () => {
             // Delete all notes in this folder
             const notesToDelete = notes.filter(note => note.folderId === folder);
             await Promise.all(notesToDelete.map(note =>
-                axios.delete(`http://localhost:4000/api/noteRoutes/user/notes/${note._id}`, {
+                axios.delete(`/api/noteRoutes/user/notes/${note._id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 })
             ));

@@ -69,7 +69,7 @@ const StudyGroups: React.FC = () => {
     try {
       if (!checkAuth()) return;
       const headers = getAuthHeaders();
-      const response = await axios.get('http://localhost:4000/api/authRoutes/all', { headers });
+      const response = await axios.get('/api/authRoutes/all', { headers });
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -80,7 +80,7 @@ const StudyGroups: React.FC = () => {
     try {
       if (!checkAuth()) return;
       const headers = getAuthHeaders();
-      const response = await axios.get('http://localhost:4000/api/groupRoutes/groups', { headers });
+      const response = await axios.get('/api/groupRoutes/groups', { headers });
       setGroups(response.data);
       
       const userId = getUserId();
@@ -110,7 +110,7 @@ const StudyGroups: React.FC = () => {
       if (!checkAuth()) return;
       const userId = getUserId();
       const headers = getAuthHeaders();
-      const res = await axios.get(`http://localhost:4000/api/invitations/user/${userId}`, { headers });
+      const res = await axios.get(`/api/invitations/user/${userId}`, { headers });
       setInvitations(res.data);
     } catch (error) {
       console.error('Error fetching invitations:', error);
@@ -120,7 +120,7 @@ const StudyGroups: React.FC = () => {
   const handleAcceptInvitation = async (invitationId: string) => {
     try {
       const headers = getAuthHeaders();
-      await axios.post(`http://localhost:4000/api/invitations/${invitationId}/accept`, {}, { headers });
+      await axios.post(`/api/invitations/${invitationId}/accept`, {}, { headers });
       fetchGroups();
       fetchInvitations();
     } catch (error) {
@@ -131,7 +131,7 @@ const StudyGroups: React.FC = () => {
   const handleDeclineInvitation = async (invitationId: string) => {
     try {
       const headers = getAuthHeaders();
-      await axios.post(`http://localhost:4000/api/invitations/${invitationId}/decline`, {}, { headers });
+      await axios.post(`/api/invitations/${invitationId}/decline`, {}, { headers });
       fetchInvitations();
     } catch (error) {
       console.error('Error declining invitation:', error);
@@ -149,7 +149,7 @@ const StudyGroups: React.FC = () => {
       }
 
       const response = await axios.post(
-        `http://localhost:4000/api/groupRoutes/groups/${groupId}/join`,
+        `/api/groupRoutes/groups/${groupId}/join`,
         { userId, role: 'member' },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -189,7 +189,7 @@ const StudyGroups: React.FC = () => {
       }
 
       const response = await axios.post(
-        `http://localhost:4000/api/groupRoutes/groups/${groupId}/leave`,
+        `/api/groupRoutes/groups/${groupId}/leave`,
         { userId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -227,9 +227,13 @@ const StudyGroups: React.FC = () => {
         return;
       }
 
+      // Find the group to check if user is creator
+      const groupToJoin = exitedGroups.find(g => g._id === groupId);
+      const role = (groupToJoin && groupToJoin.createdBy === userId) ? 'admin' : 'member';
+
       const response = await axios.post(
-        `http://localhost:4000/api/groupRoutes/groups/${groupId}/join`,
-        { userId, role: 'member' },
+        `/api/groupRoutes/groups/${groupId}/join`,
+        { userId, role },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -252,7 +256,7 @@ const StudyGroups: React.FC = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:4000/api/groupRoutes/groups',
+        '/api/groupRoutes/groups',
         {
           ...newGroup,
           userId: getUserId()
@@ -286,7 +290,7 @@ const StudyGroups: React.FC = () => {
       }
 
       const response = await axios.delete(
-        `http://localhost:4000/api/groupRoutes/groups/${groupId}`,
+        `/api/groupRoutes/groups/${groupId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -469,7 +473,7 @@ const StudyGroups: React.FC = () => {
             ) : (
               <div className="exited-groups-list">
                 {paginatedDisplayGroups.map((group) => (
-                  <div key={group._id} className="group-card mini-card">
+                  <div key={group._id} className="group-card">
                     <StudyGroupCard
                       group={group}
                       onJoin={handleRejoinGroup}

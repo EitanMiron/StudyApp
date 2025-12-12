@@ -19,6 +19,7 @@ import UserResources from "./pages/User/UserResources";
 import CreateQuiz from "./pages/User/CreateQuiz";
 import TakeQuiz from "./pages/User/TakeQuiz";
 import QuizResults from "./pages/User/QuizResults";
+import TestDeadlines from "./pages/User/TestDeadlines";
 import { AuthProvider } from './contexts/AuthContext';
 import { DashboardProvider } from './contexts/DashboardContext';
 
@@ -38,6 +39,22 @@ const App: React.FC = () => {
           element={
             <ProtectedRoute>
               <UserDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <UserDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/test-deadlines"
+          element={
+            <ProtectedRoute>
+              <TestDeadlines />
             </ProtectedRoute>
           }
         />

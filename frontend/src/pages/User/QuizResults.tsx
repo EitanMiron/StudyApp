@@ -69,7 +69,7 @@ const QuizResults: React.FC = () => {
                 }
 
                 const response = await axios.get(
-                    `http://localhost:4000/api/quizRoutes/groups/${groupId}/quizzes/${quizId}/results`,
+                    `/api/quizRoutes/groups/${groupId}/quizzes/${quizId}/results`,
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
 

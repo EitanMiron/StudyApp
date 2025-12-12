@@ -16,7 +16,7 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({ children 
             }
 
             // Fetch user stats
-            const statsResponse = await axios.get('http://localhost:4000/api/userRoutes/stats', {
+            const statsResponse = await axios.get('/api/userRoutes/stats', {
                 headers: { Authorization: `Bearer ${token}` }
             });
 

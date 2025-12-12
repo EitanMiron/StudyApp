@@ -220,13 +220,20 @@ body {
     min-height: 200px;
     background: white;
     border-radius: 1rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.15),
+        0 4px 10px rgba(0, 0, 0, 0.1),
+        0 2px 4px rgba(0, 0, 0, 0.08);
     position: relative;
     transition: transform 0.2s ease;
 }
 
 .user-notes-page .note-card:hover {
     transform: translateY(-5px);
+    box-shadow: 
+        0 12px 35px rgba(0, 0, 0, 0.2),
+        0 6px 15px rgba(0, 0, 0, 0.15),
+        0 3px 6px rgba(0, 0, 0, 0.1);
 }
 
 .user-notes-page .note-card-header {
